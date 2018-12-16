@@ -1,0 +1,1 @@
+A text hiding program written in .NET Core & .NET Framework
