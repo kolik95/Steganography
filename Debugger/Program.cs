@@ -30,7 +30,7 @@ namespace Debugger
 
 				var image = encrypter.Encrypt(path, text);
 				
-				image.Save("Encrypted.jpg",ImageFormat.Jpeg);
+				image.Save("Encrypted.jpg");
 
 			}
 
@@ -52,8 +52,6 @@ namespace Debugger
 				File.WriteAllText("Ahoj.txt", image);
 				
 			}
-
-			Console.ReadKey();
 		}
 	}
 }

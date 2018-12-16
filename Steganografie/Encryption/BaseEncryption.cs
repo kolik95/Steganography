@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
-using System.Runtime.InteropServices;
+using System.IO;
 using System.Text;
 
 namespace StgLib.Encryption
@@ -88,25 +86,46 @@ namespace StgLib.Encryption
 		{
 	
 			var lastbits = new List<int>();
-			
+
 			for (int y = 0; y < height; y++)
 			{
 
 				for (int x = 0; x < width; x++)
 				{
-					
-					lastbits.Add(pixels[x,y].R % 2);
-					lastbits.Add(pixels[x,y].G % 2);
-					lastbits.Add(pixels[x,y].B % 2);
-					
+
+					lastbits.Add(pixels[x, y].R % 2);
+					lastbits.Add(pixels[x, y].G % 2);
+					lastbits.Add(pixels[x, y].B % 2);
+
 				}
-				
+
 			}
 
-			return lastbits;
+			return FillList(lastbits, 8);
 
 		}
-		
+
+		/// <summary>
+		/// Fills the list with zeroes
+		/// so its dividable by the divider
+		/// </summary>
+		/// <param name="list"></param>
+		/// <param name="divider"></param>
+		/// <returns></returns>
+		protected List<int> FillList(List<int> list, int divider)
+		{
+
+			for (int i = divider - list.Count % divider; i > 0; i--)
+			{
+
+				list.Add(0);
+
+			}
+
+			return list;
+
+		}
+
 		/// <summary>
 		/// Converts input string to
 		/// an array of bits
@@ -116,13 +135,13 @@ namespace StgLib.Encryption
 		protected List<int> StringToBitsAscii(string input)
 		{
 
-			var bytes = Encoding.ASCII.GetBytes(input);
+			byte[] bytes = Encoding.ASCII.GetBytes(input);
 
 			var bits = new BitArray(bytes);
 
 			var bitsInInt = new List<int>();
 
-			foreach (var bit in bits)
+			foreach (bool bit in bits)
 			{
 
 				bitsInInt.Add(Convert.ToInt32(bit));
@@ -183,30 +202,9 @@ namespace StgLib.Encryption
 
 		}
 
-		/// <summary>
-		/// Fills the list with zeroes
-		/// so its dividable by the divider
-		/// </summary>
-		/// <param name="list"></param>
-		/// <param name="divider"></param>
-		/// <returns></returns>
-		protected List<int> FillList(List<int> list, int divider)
-		{
-
-			for (int i = divider - list.Count % divider; i > 0; i--)
-			{
-				
-				list.Add(0);
-				
-			}
-
-			return list;
-
-		}
-
 		protected Color ReplaceR(int value, Color pixel)
 		{
-			
+
 			return Color.FromArgb(pixel.A,
 				ReplaceLastBit(pixel.R, value),
 				pixel.G,
@@ -216,7 +214,7 @@ namespace StgLib.Encryption
 		
 		protected Color ReplaceG(int value, Color pixel)
 		{
-			
+
 			return Color.FromArgb(pixel.A,
 				pixel.R,
 				ReplaceLastBit(pixel.G, value),
@@ -226,7 +224,7 @@ namespace StgLib.Encryption
 		
 		protected Color ReplaceB(int value, Color pixel)
 		{
-			
+
 			return Color.FromArgb(pixel.A,
 				pixel.R,
 				pixel.G,
@@ -245,13 +243,13 @@ namespace StgLib.Encryption
 		protected Bitmap ReplaceImage(Color[,] pixels, Bitmap original)
 		{
 
-			for (int i = 0; i < original.Width; i++)
+			for (int y = 0; y < original.Height; y++)
 			{
 
-				for (int j = 0; j < original.Height; j++)
+				for (int x = 0; x < original.Width; x++)
 				{
 
-					original.SetPixel(i,j,pixels[i,j]);
+					original.SetPixel(x,y,pixels[x,y]);
 
 				}
 
@@ -261,6 +259,12 @@ namespace StgLib.Encryption
 
 		}
 
+		/// <summary>
+		/// Removes excess characters in a string
+		/// </summary>
+		/// <param name="text"></param>
+		/// <param name="text2"></param>
+		/// <returns></returns>
 		protected string RemoveExcess(string text, string text2)
 		{
 
@@ -296,7 +300,7 @@ namespace StgLib.Encryption
 				input++;
 
 			if (input % 2 == 1 && value == 0)
-				input++;
+				input--;
 
 			return input;
 

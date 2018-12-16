@@ -1,5 +1,9 @@
-﻿using System.ComponentModel.Design;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Drawing;
+using System.IO;
+using System.Text;
 
 namespace StgLib.Encryption
 {
@@ -13,24 +17,24 @@ namespace StgLib.Encryption
 		public override Bitmap Encrypt(string path, string text)
 		{
 
-			var image = PathToBitmap(path);
+			Bitmap image = PathToBitmap(path);
 
-			var height = image.Height;
+			int height = image.Height;
 
-			var width = image.Width;
+			int width = image.Width;
 
 			TotalImgPixelCount = width * height;
 
-			var bits = StringToBitsAscii(text);
+			List<int> bits = StringToBitsAscii(text);
 
-			var pixels = GetPixels(width, height, image);
+			Color[,] pixels = GetPixels(width, height, image);
 
-			var textCounter = 0;
+			int textCounter = 0;
 
-			for (int y = 0; y < pixels.GetLength(1); y++)
+			for (int y = 0; y < height; y++)
 			{
 
-				for (int x = 0; x < pixels.GetLength(0); x++)
+				for (int x = 0; x < width; x++)
 				{
 
 					pixels[x, y] = ReplaceR(bits[textCounter], pixels[x, y]);
@@ -41,7 +45,7 @@ namespace StgLib.Encryption
 						break;
 					
 					pixels[x, y] = ReplaceG(bits[textCounter], pixels[x, y]);
-					
+
 					textCounter++;
 					
 					if (textCounter == bits.Count)
@@ -61,7 +65,7 @@ namespace StgLib.Encryption
 
 			}
 					
-			var newImage = ReplaceImage(pixels, image);
+			Bitmap newImage = ReplaceImage(pixels, image);
 
 			return newImage;
 
@@ -70,22 +74,22 @@ namespace StgLib.Encryption
 		public override string Decrypt(string path, string reference="")
 		{
 
-			var image = PathToBitmap(path);
+			Bitmap image = PathToBitmap(path);
 
-			var height = image.Height;
+			int height = image.Height;
 
-			var width = image.Width;
+			int width = image.Width;
 
-			var pixels = GetPixels(width,height, image);
+			Color[,] pixels = GetPixels(width,height, image);
 
 			var text = BitsToTextASCII(GetBitsInImage(pixels,width,height));
 
 			if (reference != "")
 			{
 
-				var refimg = PathToBitmap(reference);
+				Bitmap refimg = PathToBitmap(reference);
 
-				var refpixels = GetPixels(refimg.Width, refimg.Height, refimg);
+				Color[,] refpixels = GetPixels(refimg.Width, refimg.Height, refimg);
 
 				var reftext = BitsToTextASCII(GetBitsInImage(refpixels, refimg.Width, refimg.Height));
 
