@@ -30,7 +30,7 @@ namespace Debugger
 
 				var image = encrypter.Encrypt(path, text);
 				
-				image.Save("Encrypted.jpg");
+				image.Save("Encrypted.bmp",ImageFormat.Bmp);
 
 			}
 
