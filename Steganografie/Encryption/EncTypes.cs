@@ -1,4 +1,4 @@
-﻿namespace StgLib.Encryption
+﻿namespace Steganografie.Encryption
 {
 	public enum EncTypes
 	{

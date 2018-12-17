@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Text;
 
-namespace StgLib.Encryption
+namespace Steganografie.Encryption
 {
 	public class LSB_ASCIIEncryption : BaseEncryption
 	{
@@ -27,45 +23,9 @@ namespace StgLib.Encryption
 
 			List<int> bits = StringToBitsAscii(text);
 
-			Color[,] pixels = GetPixels(width, height, image);
-
-			int textCounter = 0;
-
-			for (int y = 0; y < height; y++)
-			{
-
-				for (int x = 0; x < width; x++)
-				{
-
-					pixels[x, y] = ReplaceR(bits[textCounter], pixels[x, y]);
-
-					textCounter++;
-
-					if (textCounter == bits.Count)
-						break;
+			Color[,] newpixels = ReplaceLastBits(GetPixels(width, height, image), bits);
 					
-					pixels[x, y] = ReplaceG(bits[textCounter], pixels[x, y]);
-
-					textCounter++;
-					
-					if (textCounter == bits.Count)
-						break;
-					
-					pixels[x, y] = ReplaceB(bits[textCounter], pixels[x, y]);
-
-					textCounter++;
-
-					if (textCounter == bits.Count)
-						break;
-					
-				}
-
-				if (textCounter == bits.Count)
-					break;
-
-			}
-					
-			Bitmap newImage = ReplaceImage(pixels, image);
+			Bitmap newImage = ReplaceImage(newpixels, image);
 
 			return newImage;
 
@@ -82,7 +42,7 @@ namespace StgLib.Encryption
 
 			Color[,] pixels = GetPixels(width,height, image);
 
-			var text = BitsToTextASCII(GetBitsInImage(pixels,width,height));
+			var text = BitsToTextASCII(GetBitsInImage(pixels,width,height,8));
 
 			if (reference != "")
 			{
@@ -91,7 +51,7 @@ namespace StgLib.Encryption
 
 				Color[,] refpixels = GetPixels(refimg.Width, refimg.Height, refimg);
 
-				var reftext = BitsToTextASCII(GetBitsInImage(refpixels, refimg.Width, refimg.Height));
+				var reftext = BitsToTextASCII(GetBitsInImage(refpixels, refimg.Width, refimg.Height,8));
 
 				text = RemoveExcess(text, reftext);
 

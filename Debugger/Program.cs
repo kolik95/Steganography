@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Text;
-using StgLib.Encryption;
+using Steganografie.Encryption;
 
 namespace Debugger
 {
@@ -26,7 +25,7 @@ namespace Debugger
 
 				var text = Console.ReadLine();
 				
-				var encrypter = new LSB_ASCIIEncryption();
+				var encrypter = new LSB_UTF8Encryption();
 
 				var image = encrypter.Encrypt(path, text);
 				
@@ -45,7 +44,7 @@ namespace Debugger
 
 				var path2 = Console.ReadLine();
 				
-				var encrypter = new LSB_ASCIIEncryption();
+				var encrypter = new LSB_UTF8Encryption();
 				
 				var image = encrypter.Decrypt(path, path2);
 				

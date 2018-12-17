@@ -2,10 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Text;
 
-namespace StgLib.Encryption
+namespace Steganografie.Encryption
 {
 	public abstract class BaseEncryption
 	{
@@ -82,7 +81,7 @@ namespace StgLib.Encryption
 		/// </summary>
 		/// <param name="image"></param>
 		/// <returns></returns>
-		protected List<int> GetBitsInImage(Color[,] pixels, int width, int height)
+		protected List<int> GetBitsInImage(Color[,] pixels, int width, int height, int filler)
 		{
 	
 			var lastbits = new List<int>();
@@ -101,7 +100,7 @@ namespace StgLib.Encryption
 
 			}
 
-			return FillList(lastbits, 8);
+			return FillList(lastbits, filler);
 
 		}
 
@@ -152,6 +151,26 @@ namespace StgLib.Encryption
 
 		}
 
+		protected List<int> StringToBitsUTF8(string input)
+		{
+
+			byte[] bytes = Encoding.UTF8.GetBytes(input);
+
+			var bits = new BitArray(bytes);
+
+			var bitsInInt = new List<int>();
+
+			foreach (bool bit in bits)
+			{
+
+				bitsInInt.Add(Convert.ToInt32(bit));
+
+			}
+
+			return bitsInInt;
+
+		}
+
 		/// <summary>
 		/// Converts bits into text
 		/// </summary>
@@ -161,6 +180,13 @@ namespace StgLib.Encryption
 		{
 
 			return Encoding.ASCII.GetString(BitsToBytes(bits));
+
+		}
+
+		protected string BitsToTextUTF8(List<int> bits)
+		{
+
+			return Encoding.UTF8.GetString(BitsToBytes(bits));
 
 		}
 
@@ -202,7 +228,56 @@ namespace StgLib.Encryption
 
 		}
 
-		protected Color ReplaceR(int value, Color pixel)
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="pixels"></param>
+		/// <param name="bits"></param>
+		/// <returns></returns>
+		protected Color[,] ReplaceLastBits(Color[,] pixels, List<int> bits)
+		{
+
+			int textCounter = 0;
+
+			for (int y = 0; y < pixels.GetLength(1); y++)
+			{
+
+				for (int x = 0; x < pixels.GetLength(0); x++)
+				{
+
+					pixels[x, y] = ReplaceR(bits[textCounter], pixels[x, y]);
+
+					textCounter++;
+
+					if (textCounter == bits.Count)
+						break;
+
+					pixels[x, y] = ReplaceG(bits[textCounter], pixels[x, y]);
+
+					textCounter++;
+
+					if (textCounter == bits.Count)
+						break;
+
+					pixels[x, y] = ReplaceB(bits[textCounter], pixels[x, y]);
+
+					textCounter++;
+
+					if (textCounter == bits.Count)
+						break;
+
+				}
+
+				if (textCounter == bits.Count)
+					break;
+
+			}
+
+			return pixels;
+
+		}
+
+		private Color ReplaceR(int value, Color pixel)
 		{
 
 			return Color.FromArgb(pixel.A,
@@ -212,7 +287,7 @@ namespace StgLib.Encryption
 			
 		}
 		
-		protected Color ReplaceG(int value, Color pixel)
+		private Color ReplaceG(int value, Color pixel)
 		{
 
 			return Color.FromArgb(pixel.A,
@@ -222,7 +297,7 @@ namespace StgLib.Encryption
 			
 		}
 		
-		protected Color ReplaceB(int value, Color pixel)
+		private Color ReplaceB(int value, Color pixel)
 		{
 
 			return Color.FromArgb(pixel.A,
