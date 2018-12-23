@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Text;
 using Steganografie.Encryption;
 
 namespace Debugger
@@ -17,6 +18,8 @@ namespace Debugger
 			if (input == 1)
 			{
 				
+				Console.InputEncoding = Encoding.UTF8;
+
 				Console.WriteLine("Enter a full path to an image:");
 
 				var path = Console.ReadLine();
@@ -44,7 +47,7 @@ namespace Debugger
 
 				var path2 = Console.ReadLine();
 				
-				var encrypter = new LSB_UTF8Encryption();
+				var encrypter = new LSB_ASCIIEncryption();
 				
 				var image = encrypter.Decrypt(path, path2);
 				

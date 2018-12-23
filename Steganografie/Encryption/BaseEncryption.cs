@@ -34,18 +34,7 @@ namespace Steganografie.Encryption
 		/// <summary>
 		/// Decrypts the message
 		/// </summary>
-		public abstract string  Decrypt(string path,string reference="");
-
-		/// <summary>
-		/// Converts an image file path to bitmap
-		/// <param name="path"></param>
-		/// </summary>
-		protected virtual Bitmap PathToBitmap(string path)
-		{
-
-			return (Bitmap) Image.FromFile(path);
-
-		}
+		public abstract string  Decrypt(string path, string refpath = "");
 		
 		/// <summary>
 		/// Gets all pixels in an image

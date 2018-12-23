@@ -4,9 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WindowsUI"
+        xmlns:VCs="clr-namespace:WindowsUI.ValueConverters"
+        xmlns:VMs="clr-namespace:WindowsUI.ViewModels"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        DataContext="{x:Static VMs:MainWindowViewModel.GetInstance}"
+        Title="MainWindow" 
+        Height="450"
+        Width="800"
+        MinWidth="800"
+        MinHeight="450">
     <Grid>
-        
+        <Frame 
+            Content="{Binding CurrentPage, Converter={VCs:PageConverter}}"/>
     </Grid>
 </Window>

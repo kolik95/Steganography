@@ -13,41 +13,41 @@ namespace Steganografie.Encryption
 		public override Bitmap Encrypt(string path, string text)
 		{
 
-			Bitmap image = PathToBitmap(path);
+			Bitmap Image = Helpers.PathToBitmap(path);
 
-			int height = image.Height;
+			int height = Image.Height;
 
-			int width = image.Width;
+			int width = Image.Width;
 
 			TotalImgPixelCount = width * height;
 
 			List<int> bits = StringToBitsAscii(text);
 
-			Color[,] newpixels = ReplaceLastBits(GetPixels(width, height, image), bits);
+			Color[,] newpixels = ReplaceLastBits(GetPixels(width, height, Image), bits);
 					
-			Bitmap newImage = ReplaceImage(newpixels, image);
+			Bitmap newImage = ReplaceImage(newpixels, Image);
 
 			return newImage;
 
 		}
 
-		public override string Decrypt(string path, string reference="")
+		public override string Decrypt(string path, string refpath = "")
 		{
 
-			Bitmap image = PathToBitmap(path);
+			Bitmap Image = Helpers.PathToBitmap(path);
 
-			int height = image.Height;
+			int height = Image.Height;
 
-			int width = image.Width;
+			int width = Image.Width;
 
-			Color[,] pixels = GetPixels(width,height, image);
+			Color[,] pixels = GetPixels(width,height, Image);
 
 			var text = BitsToTextASCII(GetBitsInImage(pixels,width,height,8));
 
-			if (reference != "")
+			if (refpath != "")
 			{
 
-				Bitmap refimg = PathToBitmap(reference);
+				Bitmap refimg = Helpers.PathToBitmap(refpath);
 
 				Color[,] refpixels = GetPixels(refimg.Width, refimg.Height, refimg);
 
