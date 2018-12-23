@@ -1,0 +1,98 @@
+﻿<Pages:BasePage x:TypeArguments="VMs:LSBViewModel" x:Class="WindowsUI.LSBPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:WindowsUI"
+      xmlns:Pages="clr-namespace:WindowsUI.Pages"
+      xmlns:VMs="clr-namespace:WindowsUI.ViewModels"
+      xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="LSBPage">
+
+    <Border Background="{Binding Background, FallbackValue=White}" 
+            Padding="30">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0">
+                <StackPanel Orientation="Horizontal">
+                    <Label 
+                        Content="Formát textu"
+                        FontSize="15"
+                        Margin="0 0 10 0"/>
+                    <ComboBox
+                        Width="Auto"
+                        FontSize="15"
+                        IsEditable="False" 
+                        SelectedIndex="0"
+                        SelectionChanged="Selector_OnSelectionChanged">
+                        <ComboBoxItem>ASCII</ComboBoxItem>
+                        <ComboBoxItem>UTF-8</ComboBoxItem>
+                    </ComboBox>
+                </StackPanel>
+                <TextBox
+                    Margin="0 20"
+                    Text="Text k zašifrování"
+                    x:Name="EncText"
+                    FontSize="20"
+                    Height="{Binding TextHeight, FallbackValue=300}"
+                    TextWrapping="Wrap"
+                    AcceptsReturn="True"
+                    VerticalScrollBarVisibility="Auto"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Margin="25 0 0 0">
+                <Border BorderThickness="0.5"
+                        Margin="0 0 0 10">
+                    <Grid Height="{Binding TextHeight, FallbackValue=300}" 
+                          AllowDrop="True" 
+                          Drop="Grid_Drop">
+                        <TextBlock Text="Vložte obrázek" 
+                                   TextAlignment="Center" 
+                                   VerticalAlignment="Center" 
+                                   Background="Transparent" 
+                                   Foreground="Gray"/>
+                         <Image Source="{Binding DragImage}"
+                                Height="{Binding TextHeight}"/>
+                         <Grid.Background>
+                            <SolidColorBrush Color="{Binding ImageBackground}"/>
+                        </Grid.Background>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="DragOver">
+                                <i:InvokeCommandAction Command="{Binding DragOverCommand}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="DragLeave">
+                                <i:InvokeCommandAction Command="{Binding DragLeaveCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Grid>
+                    <Border.BorderBrush>
+                        <DrawingBrush Viewport="0,0,40,40" ViewportUnits="Absolute" TileMode="Tile">
+                            <DrawingBrush.Drawing>
+                                <DrawingGroup>
+                                    <GeometryDrawing Brush="Black">
+                                        <GeometryDrawing.Geometry>
+                                            <GeometryGroup>
+                                                <RectangleGeometry Rect="0,0,50,50" />
+                                                <RectangleGeometry Rect="50,50,50,50" />
+                                            </GeometryGroup>
+                                        </GeometryDrawing.Geometry>
+                                    </GeometryDrawing>
+                                </DrawingGroup>
+                            </DrawingBrush.Drawing>
+                        </DrawingBrush>
+                    </Border.BorderBrush>
+                </Border>
+                <Button Content="Zašifruj"
+                        Width="200"
+                        Height="40"
+                        HorizontalAlignment="Right"
+                        Command="{Binding EncryptCommand}"
+                        CommandParameter="{Binding ElementName=EncText, Path=Text}"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Pages:BasePage>
