@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using WindowsUI.Pages;
 using WindowsUI.ViewModels;
 
@@ -20,6 +21,8 @@ namespace WindowsUI
 		{
 			
 			((LSBViewModel)this.DataContext).Drop(sender, e);
+
+			ImageBorder.Background = new SolidColorBrush(Colors.Transparent);
 
 			e.Handled = true;
 

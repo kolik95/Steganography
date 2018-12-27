@@ -6,7 +6,6 @@
       xmlns:local="clr-namespace:WindowsUI"
       xmlns:Pages="clr-namespace:WindowsUI.Pages"
       xmlns:VMs="clr-namespace:WindowsUI.ViewModels"
-      xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="LSBPage">
@@ -46,28 +45,48 @@
             </StackPanel>
             <StackPanel Grid.Column="1" Margin="25 0 0 0">
                 <Border BorderThickness="0.5"
-                        Margin="0 0 0 10">
-                    <Grid Height="{Binding TextHeight, FallbackValue=300}" 
+                        Margin="0 0 0 10"
+                        Background="Transparent"
+                        x:Name="ImageBorder">
+                    <Border.Triggers>
+                        <EventTrigger SourceName="ImageGrid"
+                                      RoutedEvent="Grid.DragEnter">
+                            <BeginStoryboard>
+                                <Storyboard TargetName="ImageBorder" TargetProperty="Background.Color">
+                                    <ColorAnimation From="Transparent"
+                                                    To="LightGray"                                       
+                                                    Duration="0:0:0.15"
+                                                    IsAdditive="False"
+                                                    IsCumulative="False"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger SourceName="ImageGrid"
+                                      RoutedEvent="Grid.DragLeave">
+                            <BeginStoryboard>
+                                <Storyboard TargetName="ImageBorder" TargetProperty="Background.Color">
+                                    <ColorAnimation From="LightGray"
+                                                    To="Transparent"                                       
+                                                    Duration="0:0:0.15"
+                                                    IsAdditive="False"
+                                                    IsCumulative="False"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Border.Triggers>
+                    <Grid Height="{Binding ImageHeight, FallbackValue=290}" 
                           AllowDrop="True" 
-                          Drop="Grid_Drop">
+                          Drop="Grid_Drop"
+                          x:Name="ImageGrid"
+                          Background="Transparent">
                         <TextBlock Text="Vložte obrázek" 
                                    TextAlignment="Center" 
                                    VerticalAlignment="Center" 
                                    Background="Transparent" 
                                    Foreground="Gray"/>
-                         <Image Source="{Binding DragImage}"
-                                Height="{Binding TextHeight}"/>
-                         <Grid.Background>
-                            <SolidColorBrush Color="{Binding ImageBackground}"/>
-                        </Grid.Background>
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="DragOver">
-                                <i:InvokeCommandAction Command="{Binding DragOverCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="DragLeave">
-                                <i:InvokeCommandAction Command="{Binding DragLeaveCommand}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
+                        <Image Source="{Binding DragImage}"
+                               Height="{Binding ImageHeight}"
+                               x:Name="Image"/>
                     </Grid>
                     <Border.BorderBrush>
                         <DrawingBrush Viewport="0,0,40,40" ViewportUnits="Absolute" TileMode="Tile">
@@ -86,12 +105,33 @@
                         </DrawingBrush>
                     </Border.BorderBrush>
                 </Border>
-                <Button Content="Zašifruj"
-                        Width="200"
-                        Height="40"
-                        HorizontalAlignment="Right"
-                        Command="{Binding EncryptCommand}"
-                        CommandParameter="{Binding ElementName=EncText, Path=Text}"/>
+                <Grid VerticalAlignment="Stretch"
+                      HorizontalAlignment="Stretch">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0"
+                                Orientation="Horizontal">
+                        <Button Width="20"
+                                Height="20"
+                                Command="{Binding GetImageCommand}">
+                            <Image Source="../Resources/Images/OpenFile.png"/>
+                        </Button>
+                        <TextBox Width="400"
+                                 Margin="20 0 0 0"
+                                 Text="{Binding ImagePath, Mode=TwoWay}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1"
+                                Margin="0 5"
+                                Orientation="Horizontal">
+                        <Button Height="20"
+                                Width="80"
+                                Content="Uložit"
+                                Command="{Binding SaveCommand}"
+                                CommandParameter="{Binding ElementName=EncText, Path=Text}"/>
+                    </StackPanel>
+                </Grid>
             </StackPanel>
         </Grid>
     </Border>

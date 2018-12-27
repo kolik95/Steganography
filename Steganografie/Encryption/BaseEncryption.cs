@@ -334,16 +334,11 @@ namespace Steganografie.Encryption
 
 			var newtext = new StringBuilder();
 
-			for (int i = 0; i < text.Length; i++)
+			foreach (var letter in SubtractStrings(text, text2))
 			{
 
-				if (text[i] != text2[i])
-				{
+				newtext.Append(letter);
 
-					newtext.Append(text[i]);
-
-				}
-				
 			}
 
 			return newtext.ToString();
@@ -367,6 +362,29 @@ namespace Steganografie.Encryption
 				input--;
 
 			return input;
+
+		}
+
+		/// <summary>
+		/// Removes the common part of two strings
+		/// </summary>
+		/// <param name="string1"></param>
+		/// <param name="string2"></param>
+		/// <returns></returns>
+		private IEnumerable<char> SubtractStrings(string string1, string string2)
+		{
+
+			for (int i = 0; i < string1.Length; i++)
+			{
+
+				if (string1[i] != string2[i])
+				{
+
+					yield return string1[i];
+
+				}
+
+			}
 
 		}
 	}
