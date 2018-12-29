@@ -17,7 +17,7 @@ namespace WindowsUI.ValueConverters
 		    {
 
 				case Pages.Pages.LSBPage:
-					return new LSBPage();
+					return new LSBEncPage();
 
 
 				default:

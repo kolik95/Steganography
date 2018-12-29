@@ -82,10 +82,10 @@
     <Compile Include="ValueConverters\BaseValueConverter.cs" />
     <Compile Include="ValueConverters\PageConverter.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
-    <Compile Include="ViewModels\LSBViewModel.cs" />
+    <Compile Include="ViewModels\LSBEncViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="WindowResizer.cs" />
-    <Page Include="Pages\LSBPage.xaml">
+    <Page Include="Pages\LSBEncPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -97,8 +97,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Pages\LSBPage.xaml.cs">
-      <DependentUpon>LSBPage.xaml</DependentUpon>
+    <Compile Include="Pages\LSBEncPage.xaml.cs">
+      <DependentUpon>LSBEncPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
