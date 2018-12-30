@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using WindowsUI.RelayCommands;
 
 namespace WindowsUI.ViewModels
 {
@@ -20,15 +21,28 @@ namespace WindowsUI.ViewModels
 
 		#endregion
 
-		public int CurrentPage { get; set; } = 0;
+		public int CurrentPage => ToggleText=="Rozšifrovat" ? 0 : 1;
 
 		public Window AppWindow { get; set; }
 
-	    public MainWindowViewModel(Window window)
+		public RelayCommand TogglePageCommand { get; }
+
+		public string ToggleText { get; set; }
+
+		public MainWindowViewModel(Window window)
 	    {
 
 		    AppWindow = window;
 
+			TogglePageCommand = new RelayCommand(ChangePage);
+
+		    ToggleText = "Rozšifrovat";
+
 	    }
+
+		private void ChangePage()
+		{
+			ToggleText = ToggleText == "Zašifrovat" ? "Rozšifrovat" : "Zašifrovat";
+		}
     }
 }

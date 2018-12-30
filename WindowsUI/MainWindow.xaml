@@ -13,13 +13,28 @@
         Width="800"
         MinWidth="800"
         MinHeight="550">
-    <Grid>
-        <Border Padding="80"
-                Background="Orange">
+    <Grid Background="Orange">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Button Content="{Binding ToggleText, FallbackValue=Rozšifrovat}"
+                      Margin="0 0 5 0"
+                      Height="30"
+                      Width="100"
+                      Command="{Binding TogglePageCommand}"
+                      Grid.Row="1"
+                      HorizontalAlignment="Center"/>
+        <Border Padding="40"
+            Grid.Row="2">
             <Border CornerRadius="20"
                     Background="White">
                 <Frame 
-                    Content="{Binding CurrentPage, Converter={VCs:PageConverter}}"/>
+                    Content=
+                        "{Binding CurrentPage,
+                        Converter={VCs:PageConverter}}"
+                    NavigationUIVisibility="Hidden"/>
             </Border>
         </Border>
     </Grid>

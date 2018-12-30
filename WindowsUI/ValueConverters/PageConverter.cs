@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WindowsUI.Pages;
 
 namespace WindowsUI.ValueConverters
 {
@@ -16,9 +17,11 @@ namespace WindowsUI.ValueConverters
 		    switch ((Pages.Pages)value)
 		    {
 
-				case Pages.Pages.LSBPage:
+				case Pages.Pages.LSBEncPage:
 					return new LSBEncPage();
 
+				case Pages.Pages.LSBDecPage:
+					return new LSBDecPage();
 
 				default:
 					return null;

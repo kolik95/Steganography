@@ -76,15 +76,23 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Pages\BasePage.cs" />
+    <Compile Include="Pages\LSBDecPage.xaml.cs">
+      <DependentUpon>LSBDecPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Pages.cs" />
     <Compile Include="RelayCommands\RelayCommand.cs" />
     <Compile Include="RelayCommands\RelayParameterizedCommand.cs" />
     <Compile Include="ValueConverters\BaseValueConverter.cs" />
     <Compile Include="ValueConverters\PageConverter.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\LSBDecViewModel.cs" />
     <Compile Include="ViewModels\LSBEncViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="WindowResizer.cs" />
+    <Page Include="Pages\LSBDecPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\LSBEncPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -3,7 +3,8 @@
 	public enum Pages
     {
 
-		LSBPage=0,
+		LSBEncPage=0,
+		LSBDecPage=1
 
     }
 }
