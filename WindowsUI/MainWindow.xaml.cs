@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using WindowsUI.ViewModels;
 
 namespace WindowsUI
@@ -14,6 +15,15 @@ namespace WindowsUI
 			MainWindowViewModel.Build(this);
 
 			InitializeComponent();
+
+		}
+
+		private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			
+			((MainWindowViewModel)this.DataContext).ChangeEncryptionType(sender,e);
+
+			e.Handled = true;
 
 		}
 	}

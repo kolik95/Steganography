@@ -1,5 +1,7 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using WindowsUI.RelayCommands;
+using Steganografie.Encryption;
 
 namespace WindowsUI.ViewModels
 {
@@ -23,6 +25,8 @@ namespace WindowsUI.ViewModels
 
 		public int CurrentPage => ToggleText=="Rozšifrovat" ? 0 : 1;
 
+		public EncTypes EncrytionType { get; set; }
+
 		public Window AppWindow { get; set; }
 
 		public RelayCommand TogglePageCommand { get; }
@@ -38,11 +42,22 @@ namespace WindowsUI.ViewModels
 
 		    ToggleText = "Rozšifrovat";
 
+		    EncrytionType = 0;
+
 	    }
 
 		private void ChangePage()
 		{
+
 			ToggleText = ToggleText == "Zašifrovat" ? "Rozšifrovat" : "Zašifrovat";
+
 		}
-    }
+
+		public void ChangeEncryptionType(object sender, SelectionChangedEventArgs e)
+		{
+
+			EncrytionType = (EncTypes)((ComboBox)sender).SelectedIndex;
+
+		}
+	}
 }

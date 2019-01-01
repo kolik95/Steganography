@@ -22,17 +22,6 @@ namespace WindowsUI
 			
 			((LSBEncViewModel)this.DataContext).Drop(sender, e);
 
-			ImageBorder.Background = new SolidColorBrush(Colors.Transparent);
-
-			e.Handled = true;
-
-		}
-
-		private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-
-			((LSBEncViewModel) this.DataContext).ChangeEncryptionType(sender, e);
-
 			e.Handled = true;
 
 		}

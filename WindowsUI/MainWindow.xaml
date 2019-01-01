@@ -15,18 +15,33 @@
         MinHeight="550">
     <Grid Background="Orange">
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="25"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Button Content="{Binding ToggleText, FallbackValue=Rozšifrovat}"
-                      Margin="0 0 5 0"
-                      Height="30"
-                      Width="100"
-                      Command="{Binding TogglePageCommand}"
-                      Grid.Row="1"
-                      HorizontalAlignment="Center"/>
-        <Border Padding="40"
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="1"
+                    HorizontalAlignment="Center">
+            <Label 
+                Content="Formát textu"
+                FontSize="15"
+                DockPanel.Dock="Left"/>
+            <ComboBox
+                Width="Auto"
+                FontSize="15"
+                IsEditable="False" 
+                SelectedIndex="0"
+                SelectionChanged="Selector_OnSelectionChanged">
+                <ComboBoxItem>ASCII</ComboBoxItem>
+                <ComboBoxItem>UTF-8</ComboBoxItem>
+            </ComboBox>
+            <Button Content="{Binding ToggleText, FallbackValue=Rozšifrovat}"
+                    Height="30"
+                    Width="100"
+                    Command="{Binding TogglePageCommand}"
+                    Margin="20 0 0 0"/>
+        </StackPanel>
+        <Border Padding="30"
             Grid.Row="2">
             <Border CornerRadius="20"
                     Background="White">

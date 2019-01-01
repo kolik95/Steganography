@@ -10,55 +10,29 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="LSBDecPage">
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal"
-                    Grid.Row="0">
-            <Label 
-                Content="Formát textu"
-                FontSize="15"
-                Margin="0 0 10 0"/>
-            <ComboBox
-                Width="Auto"
-                FontSize="15"
-                IsEditable="False" 
-                SelectedIndex="0">
-                <ComboBoxItem>ASCII</ComboBoxItem>
-                <ComboBoxItem>UTF-8</ComboBoxItem>
-            </ComboBox>
-        </StackPanel>
-        <DockPanel Grid.Row="1">
-            <Grid AllowDrop="True" 
+    <Border Padding="30">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <ContentControl Style="{StaticResource DropControl}"
+                                Grid.Column="0"
+                                Margin="10 0">
 
-                  x:Name="ImageGrid1"
-                  Background="Transparent"
-                  DockPanel.Dock="Left">
-                <TextBlock Text="Vložte obrázek" 
-                           TextAlignment="Center" 
-                           VerticalAlignment="Center" 
-                           Background="Transparent" 
-                           Foreground="Gray"/>
-                <Image
-                       x:Name="Image1"/>
-            </Grid>
-            <Grid AllowDrop="True" 
+                </ContentControl>
+                <ContentControl Style="{StaticResource DropControl}"
+                                Grid.Column="1"
+                                Margin="10 0"
+                                Tag="Vložte obrázek (Volitelné)">
 
-                  x:Name="ImageGrid2"
-                  Background="Transparent"
-                  DockPanel.Dock="Right"
-                  Margin="10 0 0 0">
-                <TextBlock Text="Vložte obrázek" 
-                           TextAlignment="Center" 
-                           VerticalAlignment="Center" 
-                           Background="Transparent" 
-                           Foreground="Gray"/>
-                <Image 
-                       x:Name="Image2"/>
+                </ContentControl>
             </Grid>
-        </DockPanel>
-    </Grid>
+        </Grid>
+    </Border>
 </Pages:BasePage>

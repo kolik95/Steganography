@@ -45,7 +45,7 @@ namespace WindowsUI.ViewModels
 
 		#region Private Properties
 
-		private EncTypes EncrytionType { get; set; }
+	    private EncTypes EncrytionType => MainWindowViewModel.GetInstance.EncrytionType;
 
 		#endregion
 
@@ -58,8 +58,6 @@ namespace WindowsUI.ViewModels
 		    SaveCommand = new RelayParameterizedCommand(parameter=>Save((string)parameter));
 
 			Background = Brushes.Transparent;
-
-			EncrytionType = EncTypes.LSB_ASCII;
 
 		    ImagePath = "pack://application:,,,/Resources/Images/Transparent.png";
 
@@ -79,14 +77,7 @@ namespace WindowsUI.ViewModels
 				if (IsImage(paths[0]))
 					ImagePath = paths[0];
 
-		}
-
-	    public void ChangeEncryptionType(object sender, SelectionChangedEventArgs e)
-	    {
-
-		    EncrytionType = (EncTypes) ((ComboBox) sender).SelectedIndex;
-
-	    }
+		}  
 
 	    #endregion
 
@@ -142,13 +133,17 @@ namespace WindowsUI.ViewModels
 
 		    if (image == null) return;
 
-		    var filedalog = new SaveFileDialog();
+		    var fileDialog = new SaveFileDialog
+		    {
+			    Filter = "Bitmap Image | *.bmp",
+			    FileName = "Obrázek"
+		    };
 
-			filedalog.Filter = "Bitmap Image | *.bmp";
+		    fileDialog.ShowDialog();
 
-			filedalog.ShowDialog();
+		    if (fileDialog.FileName == "Obrázek") return;
 
-		    var fs = (FileStream)filedalog.OpenFile();
+		    var fs = (FileStream)fileDialog.OpenFile();
 
 			image.Save(fs, ImageFormat.Bmp);
 
