@@ -8,8 +8,6 @@ namespace Steganografie.Encryption
 
 		public override EncTypes Type => EncTypes.LSB_ASCII;
 
-		public override int MaxChars => TotalImgPixelCount * 3 / 8;
-
 		public override Bitmap Encrypt(string path, string text)
 		{
 
@@ -18,8 +16,6 @@ namespace Steganografie.Encryption
 			int height = Image.Height;
 
 			int width = Image.Width;
-
-			TotalImgPixelCount = width * height;
 
 			List<int> bits = StringToBitsAscii(text);
 
@@ -36,13 +32,9 @@ namespace Steganografie.Encryption
 
 			Bitmap Image = Helpers.PathToBitmap(path);
 
-			int height = Image.Height;
+			Color[,] pixels = GetPixels(Image.Width, Image.Height, Image);
 
-			int width = Image.Width;
-
-			Color[,] pixels = GetPixels(width,height, Image);
-
-			var text = BitsToTextASCII(GetBitsInImage(pixels,width,height,8));
+			var bytes = BitsToBytes(GetBitsInImage(pixels, Image.Width, Image.Height, 8));
 
 			if (refpath != "")
 			{
@@ -51,12 +43,14 @@ namespace Steganografie.Encryption
 
 				Color[,] refpixels = GetPixels(refimg.Width, refimg.Height, refimg);
 
-				var reftext = BitsToTextASCII(GetBitsInImage(refpixels, refimg.Width, refimg.Height,8));
+				var refbytes = BitsToBytes(GetBitsInImage(refpixels, refimg.Width, refimg.Height, 8));
 
-				text = RemoveExcess(text, reftext);
+				bytes = RemoveExcess(bytes, refbytes);
 
 			}
-			
+
+			var text = BytesToTextASCII(bytes);
+
 			return text;
 
 		}

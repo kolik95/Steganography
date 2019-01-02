@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq.Expressions;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Steganografie.Encryption
@@ -13,17 +15,6 @@ namespace Steganografie.Encryption
 		/// Defines the type of encryption
 		/// </summary>
 		public abstract EncTypes Type { get; }
-
-		/// <summary>
-		/// Returns the maximum amount of characters
-		/// you can encrypt
-		/// </summary>
-		public abstract int MaxChars { get; }
-
-		/// <summary>
-		/// Returns the amount of pixels in the image
-		/// </summary>
-		protected virtual int TotalImgPixelCount { get; set; }
 
 		/// <summary>
 		/// Encrypts the message
@@ -165,17 +156,17 @@ namespace Steganografie.Encryption
 		/// </summary>
 		/// <param name="bits"></param>
 		/// <returns></returns>
-		protected string BitsToTextASCII(List<int> bits)
+		protected string BytesToTextASCII(byte[] bytes)
 		{
 
-			return Encoding.ASCII.GetString(BitsToBytes(bits));
+			return Encoding.ASCII.GetString(bytes);
 
 		}
 
-		protected string BitsToTextUTF8(List<int> bits)
+		protected string BytesToTextUTF8(byte[] bytes)
 		{
 
-			return Encoding.UTF8.GetString(BitsToBytes(bits));
+			return Encoding.UTF8.GetString(bytes);
 
 		}
 
@@ -185,7 +176,7 @@ namespace Steganografie.Encryption
 		/// </summary>
 		/// <param name="bits"></param>
 		/// <returns></returns>
-		private byte[] BitsToBytes(List<int> bits)
+		protected byte[] BitsToBytes(List<int> bits)
 		{
 
 			for (int i = bits.Count % 8; i > -1; i--)
@@ -329,19 +320,19 @@ namespace Steganografie.Encryption
 		/// <param name="text"></param>
 		/// <param name="text2"></param>
 		/// <returns></returns>
-		protected string RemoveExcess(string text, string text2)
+		protected byte[] RemoveExcess(byte[] text, byte[] text2)
 		{
 
-			var newtext = new StringBuilder();
+			var newtext = new List<byte>();
 
-			foreach (var letter in SubtractStrings(text, text2))
+			foreach (var letter in SubtractArrays(text, text2))
 			{
 
-				newtext.Append(letter);
+				newtext.Add(letter);
 
 			}
 
-			return newtext.ToString();
+			return newtext.ToArray();
 
 		}
 		
@@ -371,7 +362,7 @@ namespace Steganografie.Encryption
 		/// <param name="string1"></param>
 		/// <param name="string2"></param>
 		/// <returns></returns>
-		private IEnumerable<char> SubtractStrings(string string1, string string2)
+		private IEnumerable<byte> SubtractArrays(byte[] string1, byte[] string2)
 		{
 
 			for (int i = 0; i < string1.Length; i++)
