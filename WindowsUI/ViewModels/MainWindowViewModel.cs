@@ -44,6 +44,8 @@ namespace WindowsUI.ViewModels
 
 		    EncrytionType = 0;
 
+		    new WindowResizer(AppWindow);
+
 	    }
 
 		private void ChangePage()

@@ -1,14 +1,12 @@
-﻿using Steganografie.Encryption;
+﻿using Microsoft.Win32;
+using Steganografie.Encryption;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using WindowsUI.RelayCommands;
-using System.IO;
-using Microsoft.Win32;
-using Image = System.Drawing.Image;
 
 namespace WindowsUI.ViewModels
 {
@@ -59,7 +57,7 @@ namespace WindowsUI.ViewModels
 
 			Background = Brushes.Transparent;
 
-		    ImagePath = "pack://application:,,,/Resources/Images/Transparent.png";
+		    ImagePath = Helpers.DefaultPath;
 
 
 	    }
@@ -74,7 +72,7 @@ namespace WindowsUI.ViewModels
 			var paths = (string[])e.Data.GetData(DataFormats.FileDrop);
 
 			if(paths.Length > 0)
-				if (IsImage(paths[0]))
+				if (Helpers.IsImage(paths[0]))
 					ImagePath = paths[0];
 
 		}  
@@ -86,30 +84,10 @@ namespace WindowsUI.ViewModels
 		private Bitmap Encrypt(string Text)
 	    {
 
-		    if (ImagePath == "pack://application:,,,/Resources/Images/Transparent.png"
-		        && !IsImage(ImagePath)) return null;
+		    if (ImagePath == Helpers.DefaultPath
+		        && !Helpers.IsImage(ImagePath)) return null;
 
 		    return Encrypter.Encrypt(ImagePath, Text);
-
-	    }
-
-	    private bool IsImage(string path)
-	    {
-
-		    try
-		    {
-
-			    Image.FromFile(path);
-
-		    }
-		    catch (Exception e)
-		    {
-
-			    return false;
-
-		    }
-
-		    return true;
 
 	    }
 
@@ -120,7 +98,7 @@ namespace WindowsUI.ViewModels
 
 		    fileDialog.ShowDialog(MainWindowViewModel.GetInstance.AppWindow);
 
-		    if (IsImage(fileDialog.FileName))
+		    if (Helpers.IsImage(fileDialog.FileName))
 			    ImagePath = fileDialog.FileName;
 
 
@@ -139,7 +117,7 @@ namespace WindowsUI.ViewModels
 			    FileName = "Obrázek"
 		    };
 
-		    fileDialog.ShowDialog();
+		    fileDialog.ShowDialog(MainWindowViewModel.GetInstance.AppWindow);
 
 		    if (fileDialog.FileName == "Obrázek") return;
 

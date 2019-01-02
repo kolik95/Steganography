@@ -33,7 +33,7 @@
                                 Style="{StaticResource DropControl}"
                                 Grid.Row="0">
                     <Image Source="{Binding DragImage}"
-                               x:Name="Image"/>
+                           x:Name="Image"/>
                 </ContentControl>
                 <Grid VerticalAlignment="Stretch"
                       HorizontalAlignment="Stretch"
@@ -43,11 +43,8 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <DockPanel Grid.Row="0">
-                        <Button Width="20"
-                                Height="20"
-                                Command="{Binding GetImageCommand}">
-                            <Image Source="../Resources/Images/OpenFile.png"/>
-                        </Button>
+                        <Button Style="{StaticResource OpenFileButton}"
+                                Command="{Binding GetImageCommand}"/>
                         <TextBox Margin="20 0 0 0"
                                  Text="{Binding ImagePath, Mode=TwoWay}"/>
                     </DockPanel>
