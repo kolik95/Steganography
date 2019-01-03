@@ -46,7 +46,8 @@
                         <Button Style="{StaticResource OpenFileButton}"
                                 Command="{Binding GetImageCommand}"/>
                         <TextBox Margin="20 0 0 0"
-                                 Text="{Binding ImagePath, Mode=TwoWay}"/>
+                                 Text="{Binding ImagePath, Mode=TwoWay}"
+                                 Style="{StaticResource PathTextBox}"/>
                     </DockPanel>
                     <Button Height="20"
                             Width="80"

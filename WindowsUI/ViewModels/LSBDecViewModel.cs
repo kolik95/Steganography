@@ -57,8 +57,8 @@ namespace WindowsUI.ViewModels
 		public LSBDecViewModel()
 		{
 
-			ImagePath = Helpers.DefaultPath;
-			ReferenceImagePath = Helpers.DefaultPath;
+			ImagePath = Others.Helpers.DefaultPath;
+			ReferenceImagePath = Others.Helpers.DefaultPath;
 
 			GetImageCommand = new RelayParameterizedCommand(parameter => GetImage((string)parameter));
 			DecryptCommand = new RelayCommand(Decrypt);
@@ -75,7 +75,7 @@ namespace WindowsUI.ViewModels
 			var paths = (string[])e.Data.GetData(DataFormats.FileDrop);
 
 			if (paths.Length == 0) return;
-			if (!Helpers.IsImage(paths[0])) return;
+			if (!Others.Helpers.IsImage(paths[0])) return;
 
 			if (((ContentControl)sender).Name == "ImageControl1")
 				ImagePath = paths[0];
@@ -95,7 +95,7 @@ namespace WindowsUI.ViewModels
 
 		    fileDialog.ShowDialog(MainWindowViewModel.GetInstance.AppWindow);
 
-		    if (!Helpers.IsImage(fileDialog.FileName)) return;
+		    if (!Others.Helpers.IsImage(fileDialog.FileName)) return;
 
 		    if (buttonName == "ImageButton")
 			    ImagePath = fileDialog.FileName;
@@ -106,9 +106,9 @@ namespace WindowsUI.ViewModels
 	    private void Decrypt()
 	    {
 
-		    if (ImagePath == Helpers.DefaultPath) return;
+		    if (ImagePath == Others.Helpers.DefaultPath) return;
 
-		    if (ReferenceImagePath == Helpers.DefaultPath)
+		    if (ReferenceImagePath == Others.Helpers.DefaultPath)
 			    DecryptText = Decrypter.Decrypt(ImagePath);
 		    else
 			    DecryptText = Decrypter.Decrypt(ImagePath, ReferenceImagePath);

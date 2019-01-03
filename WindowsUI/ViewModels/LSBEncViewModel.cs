@@ -57,7 +57,7 @@ namespace WindowsUI.ViewModels
 
 			Background = Brushes.Transparent;
 
-		    ImagePath = Helpers.DefaultPath;
+		    ImagePath = Others.Helpers.DefaultPath;
 
 
 	    }
@@ -72,7 +72,7 @@ namespace WindowsUI.ViewModels
 			var paths = (string[])e.Data.GetData(DataFormats.FileDrop);
 
 			if(paths.Length > 0)
-				if (Helpers.IsImage(paths[0]))
+				if (Others.Helpers.IsImage(paths[0]))
 					ImagePath = paths[0];
 
 		}  
@@ -84,8 +84,8 @@ namespace WindowsUI.ViewModels
 		private Bitmap Encrypt(string Text)
 	    {
 
-		    if (ImagePath == Helpers.DefaultPath
-		        && !Helpers.IsImage(ImagePath)) return null;
+		    if (ImagePath == Others.Helpers.DefaultPath
+		        && !Others.Helpers.IsImage(ImagePath)) return null;
 
 		    return Encrypter.Encrypt(ImagePath, Text);
 
@@ -98,7 +98,7 @@ namespace WindowsUI.ViewModels
 
 		    fileDialog.ShowDialog(MainWindowViewModel.GetInstance.AppWindow);
 
-		    if (Helpers.IsImage(fileDialog.FileName))
+		    if (Others.Helpers.IsImage(fileDialog.FileName))
 			    ImagePath = fileDialog.FileName;
 
 

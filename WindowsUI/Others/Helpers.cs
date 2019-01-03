@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace WindowsUI
+namespace WindowsUI.Others
 {
 	public static class Helpers
     {

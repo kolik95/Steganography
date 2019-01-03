@@ -44,7 +44,7 @@ namespace WindowsUI.ViewModels
 
 		    EncrytionType = 0;
 
-		    new WindowResizer(AppWindow);
+		    new Others.WindowResizer(AppWindow);
 
 	    }
 
