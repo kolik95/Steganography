@@ -17,7 +17,7 @@ namespace WindowsUI.ViewModels
 		public static void Build(Window window)
 		{
 
-			instance = new MainWindowViewModel(window);
+			instance = new MainWindowViewModel(ref window);
 
 		}
 
@@ -33,7 +33,7 @@ namespace WindowsUI.ViewModels
 
 		public string ToggleText { get; set; }
 
-		public MainWindowViewModel(Window window)
+		public MainWindowViewModel(ref Window window)
 	    {
 
 		    AppWindow = window;
@@ -55,7 +55,7 @@ namespace WindowsUI.ViewModels
 
 		}
 
-		public void ChangeEncryptionType(object sender, SelectionChangedEventArgs e)
+		public void ChangeEncryptionType(ref object sender, ref SelectionChangedEventArgs e)
 		{
 
 			EncrytionType = (EncTypes)((ComboBox)sender).SelectedIndex;

@@ -16,7 +16,7 @@ namespace WindowsUI.Pages
 	    private void Grid_Drop(object sender, DragEventArgs e)
 	    {
 
-			((LSBDecViewModel)this.DataContext).Drop(sender, e);
+			((LSBDecViewModel)this.DataContext).Drop(ref sender, ref e);
 
 		    e.Handled = true;
 

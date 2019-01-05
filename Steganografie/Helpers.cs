@@ -10,7 +10,7 @@ namespace Steganografie
 		/// Converts an image file path to bitmap
 		/// <param name="path"></param>
 		/// </summary>
-		public static Bitmap PathToBitmap(string path)
+		public static Bitmap PathToBitmap(ref string path)
 		{
 
 			return (Bitmap)Image.FromFile(path);

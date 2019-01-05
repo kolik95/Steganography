@@ -29,11 +29,10 @@
                     <ControlTemplate.Triggers>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
-                                <Condition Property="Text" Value="{x:Static others:Helpers.DefaultPath}"/>
+                                <Condition Property="Text" Value=""/>
                             </MultiTrigger.Conditions>
                             <MultiTrigger.Setters>
                                 <Setter TargetName="PlaceHolder" Property="Visibility" Value="Visible"/>
-                                
                             </MultiTrigger.Setters>
                         </MultiTrigger>
                     </ControlTemplate.Triggers>

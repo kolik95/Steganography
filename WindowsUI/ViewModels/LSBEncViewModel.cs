@@ -66,7 +66,7 @@ namespace WindowsUI.ViewModels
 
 		#region Public Methods
 
-		public void Drop(object sender, DragEventArgs e)
+		public void Drop(ref object sender, ref DragEventArgs e)
 		{
 
 			var paths = (string[])e.Data.GetData(DataFormats.FileDrop);
@@ -81,7 +81,7 @@ namespace WindowsUI.ViewModels
 
 		#region Helper Methods
 
-		private Bitmap Encrypt(string Text)
+		private Bitmap Encrypt(ref string Text)
 	    {
 
 		    if (ImagePath == Others.Helpers.DefaultPath
@@ -107,7 +107,7 @@ namespace WindowsUI.ViewModels
 	    private void Save(string Text)
 	    {
 
-		    Bitmap image = Encrypt(Text);
+		    Bitmap image = Encrypt(ref Text);
 
 		    if (image == null) return;
 
@@ -124,6 +124,10 @@ namespace WindowsUI.ViewModels
 		    var fs = (FileStream)fileDialog.OpenFile();
 
 			image.Save(fs, ImageFormat.Bmp);
+
+			fs.Close();
+
+			image.Dispose();
 
 		}
 

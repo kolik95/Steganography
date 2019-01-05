@@ -69,7 +69,7 @@ namespace WindowsUI.ViewModels
 
 		#region Public Methods
 
-		public void Drop(object sender, DragEventArgs e)
+		public void Drop(ref object sender, ref DragEventArgs e)
 		{
 
 			var paths = (string[])e.Data.GetData(DataFormats.FileDrop);

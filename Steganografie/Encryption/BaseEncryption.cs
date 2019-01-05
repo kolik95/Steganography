@@ -26,6 +26,8 @@ namespace Steganografie.Encryption
 		/// Decrypts the message
 		/// </summary>
 		public abstract string  Decrypt(string path, string refpath = "");
+
+		private int ReplacedBits { get; set; }
 		
 		/// <summary>
 		/// Gets all pixels in an image
@@ -34,10 +36,10 @@ namespace Steganografie.Encryption
 		/// <param name="height"></param>
 		/// <param name="image"></param>
 		/// <returns></returns>
-		protected Color[,] GetPixels(int width, int height, Bitmap image)
+		protected Color[,] GetPixels(Bitmap image)
 		{
 
-			var pixels = new Color[width, height];
+			var pixels = new Color[image.Width, image.Height];
 			
 			for (int x = 0; x < image.Width; x++)
 			{
@@ -61,7 +63,7 @@ namespace Steganografie.Encryption
 		/// </summary>
 		/// <param name="image"></param>
 		/// <returns></returns>
-		protected List<int> GetBitsInImage(Color[,] pixels, int width, int height, int filler)
+		protected List<int> GetBitsInImage(ref Color[,] pixels, int width, int height, int filler)
 		{
 	
 			var lastbits = new List<int>();
@@ -80,7 +82,7 @@ namespace Steganografie.Encryption
 
 			}
 
-			return FillList(lastbits, filler);
+			return FillList(lastbits, ref filler);
 
 		}
 
@@ -91,7 +93,7 @@ namespace Steganografie.Encryption
 		/// <param name="list"></param>
 		/// <param name="divider"></param>
 		/// <returns></returns>
-		protected List<int> FillList(List<int> list, int divider)
+		protected List<int> FillList(List<int> list, ref int divider)
 		{
 
 			for (int i = divider - list.Count % divider; i > 0; i--)
@@ -111,7 +113,7 @@ namespace Steganografie.Encryption
 		/// </summary>
 		/// <param name="input"></param>
 		/// <returns></returns>
-		protected List<int> StringToBitsAscii(string input)
+		protected List<int> StringToBitsAscii(ref string input)
 		{
 
 			byte[] bytes = Encoding.ASCII.GetBytes(input);
@@ -131,7 +133,7 @@ namespace Steganografie.Encryption
 
 		}
 
-		protected List<int> StringToBitsUTF8(string input)
+		protected List<int> StringToBitsUTF8(ref string input)
 		{
 
 			byte[] bytes = Encoding.UTF8.GetBytes(input);
@@ -156,14 +158,14 @@ namespace Steganografie.Encryption
 		/// </summary>
 		/// <param name="bits"></param>
 		/// <returns></returns>
-		protected string BytesToTextASCII(byte[] bytes)
+		protected string BytesToTextASCII(ref byte[] bytes)
 		{
 
 			return Encoding.ASCII.GetString(bytes);
 
 		}
 
-		protected string BytesToTextUTF8(byte[] bytes)
+		protected string BytesToTextUTF8(ref byte[] bytes)
 		{
 
 			return Encoding.UTF8.GetString(bytes);
@@ -214,7 +216,7 @@ namespace Steganografie.Encryption
 		/// <param name="pixels"></param>
 		/// <param name="bits"></param>
 		/// <returns></returns>
-		protected Color[,] ReplaceLastBits(Color[,] pixels, List<int> bits)
+		protected Color[,] ReplaceLastBits(Color[,] pixels, ref List<int> bits)
 		{
 
 			int textCounter = 0;
@@ -225,21 +227,21 @@ namespace Steganografie.Encryption
 				for (int x = 0; x < pixels.GetLength(0); x++)
 				{
 
-					pixels[x, y] = ReplaceR(bits[textCounter], pixels[x, y]);
+					pixels[x, y] = ReplaceR(bits[textCounter], ref pixels[x, y]);
 
 					textCounter++;
 
 					if (textCounter == bits.Count)
 						break;
 
-					pixels[x, y] = ReplaceG(bits[textCounter], pixels[x, y]);
+					pixels[x, y] = ReplaceG(bits[textCounter], ref pixels[x, y]);
 
 					textCounter++;
 
 					if (textCounter == bits.Count)
 						break;
 
-					pixels[x, y] = ReplaceB(bits[textCounter], pixels[x, y]);
+					pixels[x, y] = ReplaceB(bits[textCounter], ref pixels[x, y]);
 
 					textCounter++;
 
@@ -257,8 +259,10 @@ namespace Steganografie.Encryption
 
 		}
 
-		private Color ReplaceR(int value, Color pixel)
+		private Color ReplaceR(int value, ref Color pixel)
 		{
+
+			ReplacedBits++;
 
 			return Color.FromArgb(pixel.A,
 				ReplaceLastBit(pixel.R, value),
@@ -267,8 +271,10 @@ namespace Steganografie.Encryption
 			
 		}
 		
-		private Color ReplaceG(int value, Color pixel)
+		private Color ReplaceG(int value, ref Color pixel)
 		{
+
+			ReplacedBits++;
 
 			return Color.FromArgb(pixel.A,
 				pixel.R,
@@ -277,8 +283,10 @@ namespace Steganografie.Encryption
 			
 		}
 		
-		private Color ReplaceB(int value, Color pixel)
+		private Color ReplaceB(int value, ref Color pixel)
 		{
+
+			ReplacedBits++;
 
 			return Color.FromArgb(pixel.A,
 				pixel.R,
@@ -295,8 +303,10 @@ namespace Steganografie.Encryption
 		/// <param name="pixels"></param>
 		/// <param name="original"></param>
 		/// <returns></returns>
-		protected Bitmap ReplaceImage(Color[,] pixels, Bitmap original)
+		protected Bitmap ReplaceImage(ref Color[,] pixels, Bitmap original)
 		{
+
+			int Counter = 0;
 
 			for (int y = 0; y < original.Height; y++)
 			{
@@ -306,9 +316,21 @@ namespace Steganografie.Encryption
 
 					original.SetPixel(x,y,pixels[x,y]);
 
+					Counter++;
+
+					if (Counter == ReplacedBits)
+					{
+
+						ReplacedBits = 0;
+
+						return original;
+					}
+
 				}
 
 			}
+
+			ReplacedBits = 0;
 
 			return original;
 
@@ -320,7 +342,7 @@ namespace Steganografie.Encryption
 		/// <param name="text"></param>
 		/// <param name="text2"></param>
 		/// <returns></returns>
-		protected byte[] RemoveExcess(byte[] text, byte[] text2)
+		protected byte[] RemoveExcess(ref byte[] text, ref byte[] text2)
 		{
 
 			var newtext = new List<byte>();

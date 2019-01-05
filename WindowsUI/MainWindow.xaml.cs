@@ -21,7 +21,7 @@ namespace WindowsUI
 		private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			
-			((MainWindowViewModel)this.DataContext).ChangeEncryptionType(sender,e);
+			((MainWindowViewModel)this.DataContext).ChangeEncryptionType(ref sender,ref e);
 
 			e.Handled = true;
 

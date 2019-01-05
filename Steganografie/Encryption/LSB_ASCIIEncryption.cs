@@ -11,17 +11,13 @@ namespace Steganografie.Encryption
 		public override Bitmap Encrypt(string path, string text)
 		{
 
-			Bitmap Image = Helpers.PathToBitmap(path);
+			Bitmap Image = Helpers.PathToBitmap(ref path);
 
-			int height = Image.Height;
+			List<int> bits = StringToBitsAscii(ref text);
 
-			int width = Image.Width;
-
-			List<int> bits = StringToBitsAscii(text);
-
-			Color[,] newpixels = ReplaceLastBits(GetPixels(width, height, Image), bits);
+			Color[,] newpixels = ReplaceLastBits(GetPixels(Image), ref bits);
 					
-			Bitmap newImage = ReplaceImage(newpixels, Image);
+			Bitmap newImage = ReplaceImage(ref newpixels, Image);
 
 			return newImage;
 
@@ -30,26 +26,26 @@ namespace Steganografie.Encryption
 		public override string Decrypt(string path, string refpath = "")
 		{
 
-			Bitmap Image = Helpers.PathToBitmap(path);
+			Bitmap Image = Helpers.PathToBitmap(ref path);
 
-			Color[,] pixels = GetPixels(Image.Width, Image.Height, Image);
+			Color[,] pixels = GetPixels(Image);
 
-			var bytes = BitsToBytes(GetBitsInImage(pixels, Image.Width, Image.Height, 8));
+			var bytes = BitsToBytes(GetBitsInImage(ref pixels, Image.Width, Image.Height, 8));
 
 			if (refpath != "")
 			{
 
-				Bitmap refimg = Helpers.PathToBitmap(refpath);
+				Bitmap refimg = Helpers.PathToBitmap(ref refpath);
 
-				Color[,] refpixels = GetPixels(refimg.Width, refimg.Height, refimg);
+				Color[,] refpixels = GetPixels(refimg);
 
-				var refbytes = BitsToBytes(GetBitsInImage(refpixels, refimg.Width, refimg.Height, 8));
+				var refbytes = BitsToBytes(GetBitsInImage(ref refpixels, refimg.Width, refimg.Height, 8));
 
-				bytes = RemoveExcess(bytes, refbytes);
+				bytes = RemoveExcess(ref bytes, ref refbytes);
 
 			}
 
-			var text = BytesToTextASCII(bytes);
+			var text = BytesToTextASCII(ref bytes);
 
 			return text;
 

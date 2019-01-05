@@ -18,7 +18,7 @@ namespace WindowsUI
 		private void Grid_Drop(object sender, DragEventArgs e)
 		{
 
-			((LSBEncViewModel)this.DataContext).Drop(sender, e);
+			((LSBEncViewModel)this.DataContext).Drop(ref sender, ref e);
 
 			e.Handled = true;
 
