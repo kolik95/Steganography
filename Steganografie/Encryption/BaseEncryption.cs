@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq.Expressions;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -36,8 +37,10 @@ namespace Steganografie.Encryption
 		/// <param name="height"></param>
 		/// <param name="image"></param>
 		/// <returns></returns>
-		protected Color[,] GetPixels(Bitmap image)
+		protected Color[,] GetPixels(Bitmap image, int count)
 		{
+
+			int Counter = 0;
 
 			var pixels = new Color[image.Width, image.Height];
 			
@@ -48,6 +51,10 @@ namespace Steganografie.Encryption
 				{
 
 					pixels[x, y] = image.GetPixel(x, y);
+
+					Counter++;
+
+					if (Counter == count) return pixels;
 
 				}
 

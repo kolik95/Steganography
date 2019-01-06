@@ -16,7 +16,7 @@ namespace Steganografie.Encryption
 
 			List<int> bits = StringToBitsUTF8(ref text);
 
-			Color[,] newpixels = ReplaceLastBits(GetPixels(Image), ref bits);
+			Color[,] newpixels = ReplaceLastBits(GetPixels(Image, bits.Count), ref bits);
 
 			Bitmap newImage = ReplaceImage(ref newpixels, Image);
 
@@ -29,7 +29,7 @@ namespace Steganografie.Encryption
 
 			Bitmap Image = Helpers.PathToBitmap(ref path);
 
-			Color[,] pixels = GetPixels(Image);
+			Color[,] pixels = GetPixels(Image, Image.Height * Image.Width);
 
 			var bytes = BitsToBytes(GetBitsInImage(ref pixels, Image.Width, Image.Height, 16));
 
@@ -38,7 +38,7 @@ namespace Steganografie.Encryption
 
 				Bitmap refimg = Helpers.PathToBitmap(ref refpath);
 
-				Color[,] refpixels = GetPixels(refimg);
+				Color[,] refpixels = GetPixels(refimg, refimg.Height * refimg.Width);
 
 				var refbytes = BitsToBytes(GetBitsInImage(ref refpixels, refimg.Width, refimg.Height, 16));
 
