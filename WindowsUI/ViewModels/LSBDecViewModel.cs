@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -36,10 +37,6 @@ namespace WindowsUI.ViewModels
 
 		public string DecryptText { get; set; }
 
-	    public BitmapImage Image => new BitmapImage(new Uri(ImagePath, UriKind.RelativeOrAbsolute));
-
-		public BitmapImage ReferenceImage => new BitmapImage(new Uri(ReferenceImagePath, UriKind.RelativeOrAbsolute));
-
 		public RelayParameterizedCommand GetImageCommand { get; }
 
 		public RelayCommand DecryptCommand { get; }
@@ -56,9 +53,6 @@ namespace WindowsUI.ViewModels
 
 		public LSBDecViewModel()
 		{
-
-			ImagePath = Others.Helpers.DefaultPath;
-			ReferenceImagePath = Others.Helpers.DefaultPath;
 
 			GetImageCommand = new RelayParameterizedCommand(parameter => GetImage((string)parameter));
 			DecryptCommand = new RelayCommand(Decrypt);
@@ -103,16 +97,19 @@ namespace WindowsUI.ViewModels
 			    ReferenceImagePath = fileDialog.FileName;
 	    }
 
-	    private async Task Decrypt()
+	    private void Decrypt()
 	    {
+			new Thread(()=>
+			{
 
-		    if (ImagePath == Others.Helpers.DefaultPath) return;
+				if (ImagePath == Others.Helpers.DefaultPath) return;
 
-		    if (ReferenceImagePath == Others.Helpers.DefaultPath)
-			    DecryptText = await Decrypter.Decrypt(ImagePath);
-		    else
-			    DecryptText = await Decrypter.Decrypt(ImagePath, ReferenceImagePath);
+				if (ReferenceImagePath == Others.Helpers.DefaultPath)
+				DecryptText = Decrypter.Decrypt(ImagePath);
+				else
+				DecryptText = Decrypter.Decrypt(ImagePath, ReferenceImagePath);
 
+			}).Start();
 	    }
 
 		#endregion

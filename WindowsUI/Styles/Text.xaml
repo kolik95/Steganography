@@ -11,9 +11,10 @@
                 <ControlTemplate TargetType="{x:Type TextBox}">
                     <Grid>
                         <Border x:Name="TextBorder"
-                                BorderBrush="Gray"
+                                BorderBrush="Black"
                                 Background="Transparent"
-                                BorderThickness="0, 0, 0, 0.3">
+                                BorderThickness="0, 0, 0, 0.3"
+                                Opacity="0.5">
                             <ScrollViewer x:Name="PART_ContentHost"
                                           HorizontalScrollBarVisibility="Hidden"
                                           VerticalScrollBarVisibility="Hidden"
@@ -35,6 +36,24 @@
                                 <Setter TargetName="PlaceHolder" Property="Visibility" Value="Visible"/>
                             </MultiTrigger.Setters>
                         </MultiTrigger>
+                        <EventTrigger RoutedEvent="MouseEnter">
+                            <BeginStoryboard>
+                                <Storyboard TargetName="TextBorder" TargetProperty="Opacity">
+                                    <DoubleAnimation From="0.5"
+                                                     To="1"
+                                                     Duration="0:0:0.3"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="MouseLeave">
+                            <BeginStoryboard>
+                                <Storyboard TargetName="TextBorder" TargetProperty="Opacity">
+                                    <DoubleAnimation To="0.5"
+                                                     From="1"
+                                                     Duration="0:0:0.3"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

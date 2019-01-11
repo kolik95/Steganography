@@ -6,6 +6,7 @@
       xmlns:local="clr-namespace:WindowsUI"
       xmlns:Pages="clr-namespace:WindowsUI.Pages"
       xmlns:VMs="clr-namespace:WindowsUI.ViewModels"
+      xmlns:VCs="clr-namespace:WindowsUI.ValueConverters"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="LSBEncPage">
@@ -32,7 +33,7 @@
                 <ContentControl Drop="Grid_Drop"
                                 Style="{StaticResource DropControl}"
                                 Grid.Row="0">
-                    <Image Source="{Binding DragImage}"
+                    <Image Source="{Binding ImagePath, Converter={VCs:PathToImageConverter}}"
                            x:Name="Image"/>
                 </ContentControl>
                 <Grid VerticalAlignment="Stretch"

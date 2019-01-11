@@ -102,6 +102,7 @@
     <Compile Include="RelayCommands\RelayParameterizedCommand.cs" />
     <Compile Include="ValueConverters\BaseValueConverter.cs" />
     <Compile Include="ValueConverters\PageConverter.cs" />
+    <Compile Include="ValueConverters\PathToImageConverter.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\LSBDecViewModel.cs" />
     <Compile Include="ViewModels\LSBEncViewModel.cs" />

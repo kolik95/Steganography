@@ -4,6 +4,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
@@ -36,8 +37,6 @@ namespace WindowsUI.ViewModels
 
 	    public RelayParameterizedCommand SaveCommand { get; }
 
-		public BitmapImage DragImage => new BitmapImage(new Uri(ImagePath, UriKind.RelativeOrAbsolute));
-
 		public string ImagePath { get; set; }
 
 	    #endregion
@@ -54,12 +53,9 @@ namespace WindowsUI.ViewModels
 	    {
 
 			GetImageCommand = new RelayCommand(GetImage);
-		    SaveCommand = new RelayParameterizedCommand(async parameter=>await Save((string)parameter));
+		    SaveCommand = new RelayParameterizedCommand(parameter=>Save((string)parameter));
 
 			Background = Brushes.Transparent;
-
-		    ImagePath = Others.Helpers.DefaultPath;
-
 
 	    }
 
@@ -82,13 +78,13 @@ namespace WindowsUI.ViewModels
 
 		#region Helper Methods
 
-		private async Task<Bitmap> Encrypt(string Text)
+		private Bitmap Encrypt(string Text)
 	    {
 
 		    if (ImagePath == Others.Helpers.DefaultPath
 		        && !Others.Helpers.IsImage(ImagePath)) return null;
 
-		    return await Encrypter.Encrypt(ImagePath, Text);
+		    return Encrypter.Encrypt(ImagePath, Text);
 
 	    }
 
@@ -105,32 +101,32 @@ namespace WindowsUI.ViewModels
 
 	    }
 
-	    private async Task Save(string Text)
+	    private void Save(string Text)
 	    {
 
-		    Bitmap image = await Encrypt(Text);
+		    Bitmap image = Encrypt(Text);
 
-		    if (image == null) return;
+			if (image == null) return;
 
-		    var fileDialog = new SaveFileDialog
-		    {
-			    Filter = "Bitmap Image | *.bmp",
-			    FileName = "Obrázek"
-		    };
+			    var fileDialog = new SaveFileDialog
+			    {
+				    Filter = "Bitmap Image | *.bmp",
+				    FileName = "Obrázek"
+			    };
 
-		    fileDialog.ShowDialog(MainWindowViewModel.GetInstance.AppWindow);
+			    fileDialog.ShowDialog(MainWindowViewModel.GetInstance.AppWindow);
 
-		    if (fileDialog.FileName == "Obrázek") return;
+			    if (fileDialog.FileName == "Obrázek") return;
 
-		    var fs = (FileStream)fileDialog.OpenFile();
+			    var fs = (FileStream) fileDialog.OpenFile();
 
-			image.Save(fs, ImageFormat.Bmp);
+			    image.Save(fs, ImageFormat.Bmp);
 
-			fs.Close();
+			    fs.Close();
 
-			image.Dispose();
+			    image.Dispose();
 
-		}
+	    }
 
 	    #endregion
 

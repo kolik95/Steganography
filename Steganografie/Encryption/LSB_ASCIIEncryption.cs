@@ -9,7 +9,7 @@ namespace Steganografie.Encryption
 
 		public override EncTypes Type => EncTypes.LSB_ASCII;
 
-		public override async Task<Bitmap> Encrypt(string path, string text)
+		public override Bitmap Encrypt(string path, string text)
 		{
 
 			Bitmap Image = Helpers.PathToBitmap(ref path);
@@ -20,7 +20,7 @@ namespace Steganografie.Encryption
 
 		}
 
-		public override async Task<string> Decrypt(string path, string refpath = "")
+		public override string Decrypt(string path, string refpath = "")
 		{
 
 			Bitmap Image = Helpers.PathToBitmap(ref path);

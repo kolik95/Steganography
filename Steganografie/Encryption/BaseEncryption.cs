@@ -21,12 +21,12 @@ namespace Steganografie.Encryption
 		/// Encrypts the message
 		/// <param name="path"></param>
 		/// </summary>
-		public abstract Task<Bitmap> Encrypt(string path, string text);
+		public abstract Bitmap Encrypt(string path, string text);
 
 		/// <summary>
 		/// Decrypts the message
 		/// </summary>
-		public abstract Task<string> Decrypt(string path, string refpath = "");
+		public abstract string Decrypt(string path, string refpath = "");
 		
 		/// <summary>
 		/// Returns a list of

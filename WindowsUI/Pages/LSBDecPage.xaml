@@ -6,6 +6,7 @@
       xmlns:local="clr-namespace:WindowsUI"
       xmlns:Pages="clr-namespace:WindowsUI.Pages"
       xmlns:VMs="clr-namespace:WindowsUI.ViewModels"
+      xmlns:valueConverters="clr-namespace:WindowsUI.ValueConverters"
       mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="800"
       Title="LSBDecPage">
@@ -28,7 +29,7 @@
                                 Margin="10 0"
                                 Drop="Grid_Drop"
                                 x:Name="ImageControl1">
-                    <Image Source="{Binding Image}"/>
+                    <Image Source="{Binding ImagePath, Converter={valueConverters:PathToImageConverter}}"/>
                 </ContentControl>
                 <ContentControl Style="{StaticResource DropControl}"
                                 Grid.Column="1"
@@ -36,7 +37,7 @@
                                 Tag="Vložte obrázek (Volitelné)"
                                 Drop="Grid_Drop"
                                 x:Name="ImageControl2">
-                    <Image Source="{Binding ReferenceImage}"/>
+                    <Image Source="{Binding ReferenceImagePath, Converter={valueConverters:PathToImageConverter}}"/>
                 </ContentControl>
             </Grid>
             <Grid Grid.Row="1">
@@ -51,7 +52,8 @@
                             x:Name="ImageButton"
                             CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Name}"/>
                     <TextBox Margin="20 0 0 0"
-                             Text="{Binding ImagePath, Mode=TwoWay}"/>
+                             Text="{Binding ImagePath, Mode=TwoWay}"
+                             Style="{StaticResource PathTextBox}"/>
                 </DockPanel>
                 <DockPanel Grid.Column="1"
                            Margin="10 0">
@@ -60,7 +62,8 @@
                             x:Name="ReferenceImageButton"
                             CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Name}"/>
                     <TextBox Margin="20 0 0 0"
-                             Text="{Binding ReferenceImagePath, Mode=TwoWay}"/>
+                             Text="{Binding ReferenceImagePath, Mode=TwoWay}"
+                             Style="{StaticResource PathTextBox}"/>
                 </DockPanel>
             </Grid>
             <TextBox Grid.Row="2"
