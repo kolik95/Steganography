@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Threading.Tasks;
 
 namespace Steganografie.Encryption
 {
@@ -8,46 +9,36 @@ namespace Steganografie.Encryption
 
 		public override EncTypes Type => EncTypes.LSB_ASCII;
 
-		public override Bitmap Encrypt(string path, string text)
+		public override async Task<Bitmap> Encrypt(string path, string text)
 		{
 
 			Bitmap Image = Helpers.PathToBitmap(ref path);
 
-			List<int> bits = StringToBitsAscii(ref text);
+			List<int> bits = StringToBitsAscii(text);
 
-			Color[,] newpixels = ReplaceLastBits(GetPixels(Image, bits.Count), ref bits);
-					
-			Bitmap newImage = ReplaceImage(ref newpixels, Image);
-
-			return newImage;
+			return ReplaceLastBits(bits, Image);
 
 		}
 
-		public override string Decrypt(string path, string refpath = "")
+		public override async Task<string> Decrypt(string path, string refpath = "")
 		{
 
 			Bitmap Image = Helpers.PathToBitmap(ref path);
 
-			Color[,] pixels = GetPixels(Image, Image.Height*Image.Width);
-
-			var bytes = BitsToBytes(GetBitsInImage(ref pixels, Image.Width, Image.Height, 8));
+			var bytes = BitsToBytes(GetBitsInImage(Image.Width, Image.Height, 8,Image));
 
 			if (refpath != "")
 			{
 
 				Bitmap refimg = Helpers.PathToBitmap(ref refpath);
 
-				Color[,] refpixels = GetPixels(refimg, refimg.Height*refimg.Width);
+				var refbytes = BitsToBytes(GetBitsInImage(refimg.Width, refimg.Height, 8, Image));
 
-				var refbytes = BitsToBytes(GetBitsInImage(ref refpixels, refimg.Width, refimg.Height, 8));
-
-				bytes = RemoveExcess(ref bytes, ref refbytes);
+				bytes = RemoveExcess(bytes, refbytes);
 
 			}
 
-			var text = BytesToTextASCII(ref bytes);
-
-			return text;
+			return BytesToTextASCII(bytes);
 
 		}
 	}

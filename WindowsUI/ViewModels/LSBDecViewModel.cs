@@ -103,15 +103,15 @@ namespace WindowsUI.ViewModels
 			    ReferenceImagePath = fileDialog.FileName;
 	    }
 
-	    private void Decrypt()
+	    private async Task Decrypt()
 	    {
 
 		    if (ImagePath == Others.Helpers.DefaultPath) return;
 
 		    if (ReferenceImagePath == Others.Helpers.DefaultPath)
-			    DecryptText = Decrypter.Decrypt(ImagePath);
+			    DecryptText = await Decrypter.Decrypt(ImagePath);
 		    else
-			    DecryptText = Decrypter.Decrypt(ImagePath, ReferenceImagePath);
+			    DecryptText = await Decrypter.Decrypt(ImagePath, ReferenceImagePath);
 
 	    }
 

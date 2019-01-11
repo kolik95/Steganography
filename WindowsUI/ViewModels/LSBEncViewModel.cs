@@ -4,6 +4,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using WindowsUI.RelayCommands;
@@ -53,7 +54,7 @@ namespace WindowsUI.ViewModels
 	    {
 
 			GetImageCommand = new RelayCommand(GetImage);
-		    SaveCommand = new RelayParameterizedCommand(parameter=>Save((string)parameter));
+		    SaveCommand = new RelayParameterizedCommand(async parameter=>await Save((string)parameter));
 
 			Background = Brushes.Transparent;
 
@@ -81,13 +82,13 @@ namespace WindowsUI.ViewModels
 
 		#region Helper Methods
 
-		private Bitmap Encrypt(ref string Text)
+		private async Task<Bitmap> Encrypt(string Text)
 	    {
 
 		    if (ImagePath == Others.Helpers.DefaultPath
 		        && !Others.Helpers.IsImage(ImagePath)) return null;
 
-		    return Encrypter.Encrypt(ImagePath, Text);
+		    return await Encrypter.Encrypt(ImagePath, Text);
 
 	    }
 
@@ -104,10 +105,10 @@ namespace WindowsUI.ViewModels
 
 	    }
 
-	    private void Save(string Text)
+	    private async Task Save(string Text)
 	    {
 
-		    Bitmap image = Encrypt(ref Text);
+		    Bitmap image = await Encrypt(Text);
 
 		    if (image == null) return;
 

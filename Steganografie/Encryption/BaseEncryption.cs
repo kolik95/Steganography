@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq.Expressions;
-using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Steganografie.Encryption
 {
@@ -21,48 +21,12 @@ namespace Steganografie.Encryption
 		/// Encrypts the message
 		/// <param name="path"></param>
 		/// </summary>
-		public abstract Bitmap Encrypt(string path, string text);
+		public abstract Task<Bitmap> Encrypt(string path, string text);
 
 		/// <summary>
 		/// Decrypts the message
 		/// </summary>
-		public abstract string  Decrypt(string path, string refpath = "");
-
-		private int ReplacedBits { get; set; }
-		
-		/// <summary>
-		/// Gets all pixels in an image
-		/// </summary>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="image"></param>
-		/// <returns></returns>
-		protected Color[,] GetPixels(Bitmap image, int count)
-		{
-
-			int Counter = 0;
-
-			var pixels = new Color[image.Width, image.Height];
-			
-			for (int x = 0; x < image.Width; x++)
-			{
-
-				for (int y = 0; y < image.Height; y++)
-				{
-
-					pixels[x, y] = image.GetPixel(x, y);
-
-					Counter++;
-
-					if (Counter == count) return pixels;
-
-				}
-
-			}
-
-			return pixels;
-
-		}
+		public abstract Task<string> Decrypt(string path, string refpath = "");
 		
 		/// <summary>
 		/// Returns a list of
@@ -70,7 +34,7 @@ namespace Steganografie.Encryption
 		/// </summary>
 		/// <param name="image"></param>
 		/// <returns></returns>
-		protected List<int> GetBitsInImage(ref Color[,] pixels, int width, int height, int filler)
+		protected List<int> GetBitsInImage(int width, int height, int filler, Bitmap Image)
 		{
 	
 			var lastbits = new List<int>();
@@ -81,15 +45,15 @@ namespace Steganografie.Encryption
 				for (int x = 0; x < width; x++)
 				{
 
-					lastbits.Add(pixels[x, y].R % 2);
-					lastbits.Add(pixels[x, y].G % 2);
-					lastbits.Add(pixels[x, y].B % 2);
+					lastbits.Add(Image.GetPixel(x,y).R % 2);
+					lastbits.Add(Image.GetPixel(x, y).G % 2);
+					lastbits.Add(Image.GetPixel(x, y).B % 2);
 
 				}
 
 			}
 
-			return FillList(lastbits, ref filler);
+			return FillList(lastbits, filler);
 
 		}
 
@@ -100,7 +64,7 @@ namespace Steganografie.Encryption
 		/// <param name="list"></param>
 		/// <param name="divider"></param>
 		/// <returns></returns>
-		protected List<int> FillList(List<int> list, ref int divider)
+		protected List<int> FillList(List<int> list, int divider)
 		{
 
 			for (int i = divider - list.Count % divider; i > 0; i--)
@@ -120,7 +84,7 @@ namespace Steganografie.Encryption
 		/// </summary>
 		/// <param name="input"></param>
 		/// <returns></returns>
-		protected List<int> StringToBitsAscii(ref string input)
+		protected List<int> StringToBitsAscii(string input)
 		{
 
 			byte[] bytes = Encoding.ASCII.GetBytes(input);
@@ -140,7 +104,7 @@ namespace Steganografie.Encryption
 
 		}
 
-		protected List<int> StringToBitsUTF8(ref string input)
+		protected List<int> StringToBitsUTF8(string input)
 		{
 
 			byte[] bytes = Encoding.UTF8.GetBytes(input);
@@ -165,14 +129,14 @@ namespace Steganografie.Encryption
 		/// </summary>
 		/// <param name="bits"></param>
 		/// <returns></returns>
-		protected string BytesToTextASCII(ref byte[] bytes)
+		protected string BytesToTextASCII(byte[] bytes)
 		{
 
 			return Encoding.ASCII.GetString(bytes);
 
 		}
 
-		protected string BytesToTextUTF8(ref byte[] bytes)
+		protected string BytesToTextUTF8(byte[] bytes)
 		{
 
 			return Encoding.UTF8.GetString(bytes);
@@ -223,32 +187,32 @@ namespace Steganografie.Encryption
 		/// <param name="pixels"></param>
 		/// <param name="bits"></param>
 		/// <returns></returns>
-		protected Color[,] ReplaceLastBits(Color[,] pixels, ref List<int> bits)
+		protected Bitmap ReplaceLastBits(List<int> bits, Bitmap Image)
 		{
 
 			int textCounter = 0;
 
-			for (int y = 0; y < pixels.GetLength(1); y++)
+			for (int y = 0; y < Image.Height; y++)
 			{
 
-				for (int x = 0; x < pixels.GetLength(0); x++)
+				for (int x = 0; x < Image.Width; x++)
 				{
 
-					pixels[x, y] = ReplaceR(bits[textCounter], ref pixels[x, y]);
+					Image.SetPixel(x,y, ReplaceR(bits[textCounter], Image.GetPixel(x,y)));
 
 					textCounter++;
 
 					if (textCounter == bits.Count)
 						break;
 
-					pixels[x, y] = ReplaceG(bits[textCounter], ref pixels[x, y]);
+					Image.SetPixel(x, y, ReplaceG(bits[textCounter], Image.GetPixel(x, y)));
 
 					textCounter++;
 
 					if (textCounter == bits.Count)
 						break;
 
-					pixels[x, y] = ReplaceB(bits[textCounter], ref pixels[x, y]);
+					Image.SetPixel(x, y, ReplaceB(bits[textCounter], Image.GetPixel(x, y)));
 
 					textCounter++;
 
@@ -262,14 +226,12 @@ namespace Steganografie.Encryption
 
 			}
 
-			return pixels;
+			return Image;
 
 		}
 
-		private Color ReplaceR(int value, ref Color pixel)
+		private Color ReplaceR(int value, Color pixel)
 		{
-
-			ReplacedBits++;
 
 			return Color.FromArgb(pixel.A,
 				ReplaceLastBit(pixel.R, value),
@@ -278,10 +240,8 @@ namespace Steganografie.Encryption
 			
 		}
 		
-		private Color ReplaceG(int value, ref Color pixel)
+		private Color ReplaceG(int value, Color pixel)
 		{
-
-			ReplacedBits++;
 
 			return Color.FromArgb(pixel.A,
 				pixel.R,
@@ -290,10 +250,8 @@ namespace Steganografie.Encryption
 			
 		}
 		
-		private Color ReplaceB(int value, ref Color pixel)
+		private Color ReplaceB(int value, Color pixel)
 		{
-
-			ReplacedBits++;
 
 			return Color.FromArgb(pixel.A,
 				pixel.R,
@@ -303,53 +261,12 @@ namespace Steganografie.Encryption
 		}
 
 		/// <summary>
-		/// Replaces images pixels
-		/// with pixels provided in
-		/// a 2D array
-		/// </summary>
-		/// <param name="pixels"></param>
-		/// <param name="original"></param>
-		/// <returns></returns>
-		protected Bitmap ReplaceImage(ref Color[,] pixels, Bitmap original)
-		{
-
-			int Counter = 0;
-
-			for (int y = 0; y < original.Height; y++)
-			{
-
-				for (int x = 0; x < original.Width; x++)
-				{
-
-					original.SetPixel(x,y,pixels[x,y]);
-
-					Counter++;
-
-					if (Counter == ReplacedBits)
-					{
-
-						ReplacedBits = 0;
-
-						return original;
-					}
-
-				}
-
-			}
-
-			ReplacedBits = 0;
-
-			return original;
-
-		}
-
-		/// <summary>
 		/// Removes excess characters in a string
 		/// </summary>
 		/// <param name="text"></param>
 		/// <param name="text2"></param>
 		/// <returns></returns>
-		protected byte[] RemoveExcess(ref byte[] text, ref byte[] text2)
+		protected byte[] RemoveExcess(byte[] text, byte[] text2)
 		{
 
 			var newtext = new List<byte>();
