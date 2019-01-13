@@ -320,9 +320,7 @@ namespace Steganografie.Encryption
 					yield return string1[i];
 
 				}
-
 			}
-
 		}
 	}
 }
