@@ -11,10 +11,9 @@
                 <ControlTemplate TargetType="{x:Type TextBox}">
                     <Grid>
                         <Border x:Name="TextBorder"
-                                BorderBrush="Black"
+                                BorderBrush="Gray"
                                 Background="Transparent"
-                                BorderThickness="0, 0, 0, 0.3"
-                                Opacity="0.5">
+                                BorderThickness="0, 0, 0, 0.3">
                             <ScrollViewer x:Name="PART_ContentHost"
                                           HorizontalScrollBarVisibility="Hidden"
                                           VerticalScrollBarVisibility="Hidden"
@@ -23,7 +22,7 @@
                         </Border>
                         <TextBlock x:Name="PlaceHolder"
                                    Opacity="0.5"
-                                   Text="Cesta k souboru"
+                                   Text="{TemplateBinding Tag}"
                                    Visibility="Collapsed"
                                    Background="Transparent"/>
                     </Grid>
@@ -38,19 +37,78 @@
                         </MultiTrigger>
                         <EventTrigger RoutedEvent="MouseEnter">
                             <BeginStoryboard>
-                                <Storyboard TargetName="TextBorder" TargetProperty="Opacity">
-                                    <DoubleAnimation From="0.5"
-                                                     To="1"
-                                                     Duration="0:0:0.3"/>
+                                <Storyboard TargetName="TextBorder" TargetProperty="BorderBrush.Color">
+                                    <ColorAnimation From="Gray"
+                                                    To="Black"
+                                                    Duration="0:0:0.3"/>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
                         <EventTrigger RoutedEvent="MouseLeave">
                             <BeginStoryboard>
-                                <Storyboard TargetName="TextBorder" TargetProperty="Opacity">
-                                    <DoubleAnimation To="0.5"
-                                                     From="1"
-                                                     Duration="0:0:0.3"/>
+                                <Storyboard TargetName="TextBorder" TargetProperty="BorderBrush.Color">
+                                    <ColorAnimation To="Gray"
+                                                    From="Black"
+                                                    Duration="0:0:0.3"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type TextBox}" x:Key="IOBox">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="AcceptsReturn" Value="True"/>
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Grid>
+                        <Border x:Name="TextBorder"
+                                BorderBrush="Gray"
+                                Background="Transparent"
+                                BorderThickness="0.3">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          HorizontalScrollBarVisibility="Hidden"
+                                          VerticalScrollBarVisibility="Hidden"
+
+                                          Foreground="{TemplateBinding Foreground}"/>
+                        </Border>
+                        <TextBlock x:Name="PlaceHolder"
+                                   Opacity="0.5"
+                                   Text="{TemplateBinding Tag}"
+                                   Visibility="Collapsed"
+                                   Background="Transparent"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Text" Value=""/>
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.Setters>
+                                <Setter TargetName="PlaceHolder" Property="Visibility" Value="Visible"/>
+                            </MultiTrigger.Setters>
+                        </MultiTrigger>
+                        <EventTrigger RoutedEvent="MouseEnter">
+                            <BeginStoryboard>
+                                <Storyboard TargetName="TextBorder" TargetProperty="BorderBrush.Color">
+                                    <ColorAnimation From="Gray"
+                                                    To="Black"
+                                                    Duration="0:0:0.3"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="MouseLeave">
+                            <BeginStoryboard>
+                                <Storyboard TargetName="TextBorder" TargetProperty="BorderBrush.Color">
+                                    <ColorAnimation To="Gray"
+                                                    From="Black"
+                                                    Duration="0:0:0.3"/>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>

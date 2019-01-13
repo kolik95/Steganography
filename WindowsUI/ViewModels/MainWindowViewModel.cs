@@ -25,13 +25,31 @@ namespace WindowsUI.ViewModels
 
 		public int CurrentPage => ToggleText=="Rozšifrovat" ? 0 : 1;
 
-		public EncTypes EncrytionType { get; set; }
-
 		public Window AppWindow { get; set; }
 
 		public RelayCommand TogglePageCommand { get; }
 
 		public string ToggleText { get; set; }
+
+		public BaseEncryption Encrypter
+		{
+
+			get
+			{
+
+				if (EncrytionType == 0)
+					return ASCIIEncrypter;
+				return UTF8Encrypter;
+
+			}
+
+		}
+
+		private LSB_ASCIIEncryption ASCIIEncrypter { get; }
+
+		private LSB_UTF8Encryption UTF8Encrypter { get; }
+
+		private EncTypes EncrytionType { get; set; }
 
 		public MainWindowViewModel(ref Window window)
 	    {
@@ -45,6 +63,9 @@ namespace WindowsUI.ViewModels
 		    EncrytionType = 0;
 
 		    new Others.WindowResizer(AppWindow);
+
+			ASCIIEncrypter = new LSB_ASCIIEncryption();
+			UTF8Encrypter = new LSB_UTF8Encryption();
 
 	    }
 

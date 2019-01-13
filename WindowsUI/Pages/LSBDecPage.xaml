@@ -53,7 +53,8 @@
                             CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Name}"/>
                     <TextBox Margin="20 0 0 0"
                              Text="{Binding ImagePath, Mode=TwoWay}"
-                             Style="{StaticResource PathTextBox}"/>
+                             Style="{StaticResource PathTextBox}"
+                             Tag="Cesta k zašifrovanému obrázku"/>
                 </DockPanel>
                 <DockPanel Grid.Column="1"
                            Margin="10 0">
@@ -63,19 +64,21 @@
                             CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Name}"/>
                     <TextBox Margin="20 0 0 0"
                              Text="{Binding ReferenceImagePath, Mode=TwoWay}"
-                             Style="{StaticResource PathTextBox}"/>
+                             Style="{StaticResource PathTextBox}"
+                             Tag="Cesta k původnímu obrázku (nepovinné)"/>
                 </DockPanel>
             </Grid>
             <TextBox Grid.Row="2"
                      Margin="10"
                      HorizontalScrollBarVisibility="Disabled"
-                     VerticalScrollBarVisibility="Auto"
-                     TextWrapping="Wrap"
-                     Text="{Binding DecryptText, Mode=TwoWay}"/>
+                     Text="{Binding DecryptText, Mode=TwoWay}"
+                     Style="{StaticResource IOBox}"
+                     Tag="Výstup"/>
             <Button Grid.Row="3"
                     Content="Rozšifruj"
                     Margin="10 0"
-                    Command="{Binding DecryptCommand}"/>
+                    Command="{Binding DecryptCommand}"
+                    Style="{StaticResource ButtonStyle}"/>
         </Grid>
     </Border>
 </Pages:BasePage>

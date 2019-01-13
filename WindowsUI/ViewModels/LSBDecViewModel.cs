@@ -1,37 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Microsoft.Win32;
+using Steganografie.Encryption;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Imaging;
+using WindowsUI.Others;
 using WindowsUI.RelayCommands;
-using Microsoft.Win32;
-using Steganografie.Encryption;
 
 namespace WindowsUI.ViewModels
 {
-    public class LSBDecViewModel : BaseViewModel
+	public class LSBDecViewModel : BaseViewModel
     {
 
 		#region Public Members
 
-		public BaseEncryption Decrypter
-	    {
+		public BaseEncryption Decrypter => MainWindowViewModel.GetInstance.Encrypter;
 
-		    get
-		    {
-
-			    if (EncrytionType == EncTypes.LSB_ASCII)
-				    return new LSB_ASCIIEncryption();
-				return new LSB_UTF8Encryption();
-			}
-
-	    }
-
-	    public string ImagePath { get; set; }
+		public string ImagePath { get; set; }
 
 	    public string ReferenceImagePath { get; set; }
 
@@ -44,8 +28,6 @@ namespace WindowsUI.ViewModels
 		#endregion
 
 		#region Private Members
-
-		private EncTypes EncrytionType => MainWindowViewModel.GetInstance.EncrytionType;
 
 		#endregion
 
@@ -97,20 +79,17 @@ namespace WindowsUI.ViewModels
 			    ReferenceImagePath = fileDialog.FileName;
 	    }
 
-	    private void Decrypt()
-	    {
-			new Thread(()=>
-			{
+		private void Decrypt()
+		{
 
-				if (ImagePath == Others.Helpers.DefaultPath) return;
+			if (!Helpers.IsImage(ImagePath)) return;
 
-				if (ReferenceImagePath == Others.Helpers.DefaultPath)
-				DecryptText = Decrypter.Decrypt(ImagePath);
-				else
+			if (Helpers.IsImage(ReferenceImagePath))
 				DecryptText = Decrypter.Decrypt(ImagePath, ReferenceImagePath);
+			else
+				DecryptText = Decrypter.Decrypt(ImagePath);
 
-			}).Start();
-	    }
+		}
 
 		#endregion
 

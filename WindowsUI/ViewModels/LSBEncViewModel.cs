@@ -17,19 +17,7 @@ namespace WindowsUI.ViewModels
 
 		#region Public Properties
 
-	    public BaseEncryption Encrypter
-	    {
-
-		    get
-		    {
-
-				if(EncrytionType == 0)
-					return new LSB_ASCIIEncryption();
-				return new LSB_UTF8Encryption();
-
-		    }
-
-	    }
+	    public BaseEncryption Encrypter => MainWindowViewModel.GetInstance.Encrypter;
 
 	    public Brush Background { get; set; }
 
@@ -42,8 +30,6 @@ namespace WindowsUI.ViewModels
 	    #endregion
 
 		#region Private Properties
-
-	    private EncTypes EncrytionType => MainWindowViewModel.GetInstance.EncrytionType;
 
 		#endregion
 
@@ -81,8 +67,7 @@ namespace WindowsUI.ViewModels
 		private Bitmap Encrypt(string Text)
 	    {
 
-		    if (ImagePath == Others.Helpers.DefaultPath
-		        && !Others.Helpers.IsImage(ImagePath)) return null;
+		    if (!Others.Helpers.IsImage(ImagePath)) return null;
 
 		    return Encrypter.Encrypt(ImagePath, Text);
 
@@ -108,23 +93,23 @@ namespace WindowsUI.ViewModels
 
 			if (image == null) return;
 
-			    var fileDialog = new SaveFileDialog
-			    {
-				    Filter = "Bitmap Image | *.bmp",
-				    FileName = "Obrázek"
-			    };
+			var fileDialog = new SaveFileDialog
+			{
+				Filter = "Bitmap Image | *.bmp",
+				FileName = "Obrázek"
+			};
 
-			    fileDialog.ShowDialog(MainWindowViewModel.GetInstance.AppWindow);
+			fileDialog.ShowDialog(MainWindowViewModel.GetInstance.AppWindow);
 
-			    if (fileDialog.FileName == "Obrázek") return;
+			if (fileDialog.FileName == "Obrázek") return;
 
-			    var fs = (FileStream) fileDialog.OpenFile();
+			var fs = (FileStream) fileDialog.OpenFile();
 
-			    image.Save(fs, ImageFormat.Bmp);
+			image.Save(fs, ImageFormat.Bmp);
 
-			    fs.Close();
+			fs.Close();
 
-			    image.Dispose();
+			image.Dispose();
 
 	    }
 

@@ -26,7 +26,5 @@ namespace WindowsUI.Others
 
 	    }
 
-	    public static string DefaultPath => "pack://application:,,,/Resources/Images/Transparent.png";
-
     }
 }

@@ -18,13 +18,10 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
-            <TextBox Text="Text k zašifrování"
-                     x:Name="EncText"
-                     FontSize="20"
-                     TextWrapping="Wrap"
-                     AcceptsReturn="True"
-                     VerticalScrollBarVisibility="Auto"
-                     Grid.Column="0"/>
+            <TextBox x:Name="EncText"
+                     Style="{StaticResource IOBox}"
+                     Grid.Column="0"
+                     Tag="Text k zašifrování"/>
             <Grid Grid.Column="1" Margin="25 0 0 0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
@@ -48,7 +45,8 @@
                                 Command="{Binding GetImageCommand}"/>
                         <TextBox Margin="20 0 0 0"
                                  Text="{Binding ImagePath, Mode=TwoWay}"
-                                 Style="{StaticResource PathTextBox}"/>
+                                 Style="{StaticResource PathTextBox}"
+                                 Tag="Cesta k obrázku"/>
                     </DockPanel>
                     <Button Height="20"
                             Width="80"
@@ -57,7 +55,8 @@
                             Command="{Binding SaveCommand}"
                             CommandParameter="{Binding ElementName=EncText, Path=Text}"
                             Grid.Row="1"
-                            Margin="0 5"/>
+                            Margin="0 5"
+                            Style="{StaticResource ButtonStyle}"/>
                 </Grid>
             </Grid>
         </Grid>
