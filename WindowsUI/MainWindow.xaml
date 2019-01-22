@@ -8,11 +8,13 @@
         xmlns:VMs="clr-namespace:WindowsUI.ViewModels"
         mc:Ignorable="d"
         DataContext="{x:Static VMs:MainWindowViewModel.GetInstance}"
-        Title="MainWindow" 
+        Title="TextHider" 
         Height="550"
         Width="800"
         MinWidth="800"
-        MinHeight="550">
+        MinHeight="550"
+        WindowStartupLocation="CenterScreen"
+        Icon="Resources/Images/Icon.ico">
     <Grid Background="Orange">
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>

@@ -36,7 +36,7 @@ namespace Steganografie.Encryption
 		/// <returns></returns>
 		protected List<int> GetBitsInImage(int width, int height, int filler, Bitmap Image)
 		{
-	
+
 			var lastbits = new List<int>();
 
 			for (int y = 0; y < height; y++)

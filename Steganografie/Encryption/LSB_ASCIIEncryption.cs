@@ -32,7 +32,7 @@ namespace Steganografie.Encryption
 
 				Bitmap refimg = Helpers.PathToBitmap(ref refpath);
 
-				var refbytes = BitsToBytes(GetBitsInImage(refimg.Width, refimg.Height, 8, Image));
+				var refbytes = BitsToBytes(GetBitsInImage(refimg.Width, refimg.Height, 8, refimg));
 
 				bytes = RemoveExcess(bytes, refbytes);
 
