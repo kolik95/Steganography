@@ -1,13 +1,9 @@
 ﻿using Microsoft.Win32;
 using Steganografie.Encryption;
-using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media.Imaging;
 using WindowsUI.RelayCommands;
 
 namespace WindowsUI.ViewModels
@@ -25,11 +21,26 @@ namespace WindowsUI.ViewModels
 
 	    public RelayParameterizedCommand SaveCommand { get; }
 
-		public string ImagePath { get; set; }
+	    public string ImagePath
+	    {
+
+		    get { return imagePath;}
+
+		    set
+		    {
+
+			    Bitmap image = (Bitmap)Image.FromFile(value);
+			    if (image.Height <= 2160 || image.Width <= 3840)
+				    imagePath = value;
+
+		    }
+	    }
 
 	    #endregion
 
 		#region Private Properties
+
+		private string imagePath;
 
 		#endregion
 
@@ -80,8 +91,12 @@ namespace WindowsUI.ViewModels
 
 		    fileDialog.ShowDialog(MainWindowViewModel.GetInstance.AppWindow);
 
-		    if (Others.Helpers.IsImage(fileDialog.FileName))
-			    ImagePath = fileDialog.FileName;
+		    if (Others.Helpers.IsImage(fileDialog.FileName)) return;
+
+		    Bitmap image = (Bitmap)Image.FromFile(fileDialog.FileName);
+		    if (image.Height < 2160 || image.Width < 3840) return;
+
+			ImagePath = fileDialog.FileName;
 
 
 	    }

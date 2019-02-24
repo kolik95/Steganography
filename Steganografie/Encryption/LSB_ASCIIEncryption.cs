@@ -14,6 +14,8 @@ namespace Steganografie.Encryption
 
 			Bitmap Image = Helpers.PathToBitmap(ref path);
 
+			if (text == "" || text == string.Empty || text == null) return Image;
+
 			List<int> bits = StringToBitsAscii(text);
 
 			return ReplaceLastBits(bits, Image);

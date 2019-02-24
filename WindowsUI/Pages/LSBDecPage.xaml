@@ -34,7 +34,7 @@
                 <ContentControl Style="{StaticResource DropControl}"
                                 Grid.Column="1"
                                 Margin="10 0"
-                                Tag="Vložte obrázek (Volitelné)"
+                                Tag="Vložte původní obrázek (volitelné)"
                                 Drop="Grid_Drop"
                                 x:Name="ImageControl2">
                     <Image Source="{Binding ReferenceImagePath, Converter={valueConverters:PathToImageConverter}}"/>
@@ -65,7 +65,7 @@
                     <TextBox Margin="20 0 0 0"
                              Text="{Binding ReferenceImagePath, Mode=TwoWay}"
                              Style="{StaticResource PathTextBox}"
-                             Tag="Cesta k původnímu obrázku (nepovinné)"/>
+                             Tag="Cesta k původnímu obrázku (volitelné)"/>
                 </DockPanel>
             </Grid>
             <TextBox Grid.Row="2"
@@ -75,9 +75,10 @@
                      Style="{StaticResource IOBox}"
                      Tag="Výstup"/>
             <Button Grid.Row="3"
-                    Content="Rozšifruj"
+                    Content="{Binding ButtonText}"
                     Margin="10 0"
                     Command="{Binding DecryptCommand}"
+                    IsEnabled="{Binding ButtonEnabled}"
                     Style="{StaticResource ButtonStyle}"/>
         </Grid>
     </Border>

@@ -1,5 +1,7 @@
-﻿using Microsoft.Win32;
+﻿using System;
+using Microsoft.Win32;
 using Steganografie.Encryption;
+using System.Drawing;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,11 +17,43 @@ namespace WindowsUI.ViewModels
 
 		public BaseEncryption Decrypter => MainWindowViewModel.GetInstance.Encrypter;
 
-		public string ImagePath { get; set; }
+		public string ImagePath
+		{
 
-	    public string ReferenceImagePath { get; set; }
+			get { return imagePath; }
+
+			set
+			{
+
+				Bitmap image = (Bitmap)System.Drawing.Image.FromFile(value);
+				if (image.Height <= 2160 || image.Width <= 3840)
+					imagePath = value;
+
+			}
+
+		}
+
+		public string ReferenceImagePath
+		{
+
+			get { return imageReferencePath; }
+
+			set
+			{
+
+				Bitmap image = (Bitmap)System.Drawing.Image.FromFile(value);
+				if (image.Height <= 2160 || image.Width <= 3840)
+					imageReferencePath = value;
+
+			}
+
+		}
 
 		public string DecryptText { get; set; }
+
+		public string ButtonText { get; set; }
+
+		public bool ButtonEnabled { get; set; }
 
 		public RelayParameterizedCommand GetImageCommand { get; }
 
@@ -28,6 +62,10 @@ namespace WindowsUI.ViewModels
 		#endregion
 
 		#region Private Members
+
+		private string imagePath;
+
+		private string imageReferencePath;
 
 		#endregion
 
@@ -38,6 +76,8 @@ namespace WindowsUI.ViewModels
 
 			GetImageCommand = new RelayParameterizedCommand(parameter => GetImage((string)parameter));
 			DecryptCommand = new RelayCommand(Decrypt);
+			ButtonText = "Rozšifruj";
+			ButtonEnabled = true;
 
 		}
 
@@ -84,14 +124,48 @@ namespace WindowsUI.ViewModels
 
 			if (!Helpers.IsImage(ImagePath)) return;
 
+			Thread thread;
+
 			if (Helpers.IsImage(ReferenceImagePath))
-				DecryptText = Decrypter.Decrypt(ImagePath, ReferenceImagePath);
+				thread = new Thread(() =>
+				{
+					DecryptText = Decrypter.Decrypt(ImagePath, ReferenceImagePath);
+					GC.Collect();
+					GC.WaitForPendingFinalizers();
+				});
 			else
-				DecryptText = Decrypter.Decrypt(ImagePath);
+				thread = new Thread(() =>
+				{
+					DecryptText = Decrypter.Decrypt(ImagePath).Remove(250);
+					GC.Collect();
+					GC.WaitForPendingFinalizers();
+				});
 
+			thread.Start();
+
+			new Thread(() =>
+			{
+
+				ButtonEnabled = false;
+
+				while (thread.ThreadState == ThreadState.Running)
+				{
+
+					ButtonText = "Pracuji.";
+					Thread.Sleep(1200);
+					ButtonText = "Pracuji..";
+					Thread.Sleep(1200);
+					ButtonText = "Pracuji...";
+					Thread.Sleep(1200);
+
+				}
+
+				ButtonEnabled = true;
+
+				ButtonText = "Rozšifruj";
+
+			}).Start();
 		}
-
 		#endregion
-
 	}
 }
