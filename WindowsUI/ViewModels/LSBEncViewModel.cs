@@ -91,10 +91,7 @@ namespace WindowsUI.ViewModels
 
 		    fileDialog.ShowDialog(MainWindowViewModel.GetInstance.AppWindow);
 
-		    if (Others.Helpers.IsImage(fileDialog.FileName)) return;
-
-		    Bitmap image = (Bitmap)Image.FromFile(fileDialog.FileName);
-		    if (image.Height < 2160 || image.Width < 3840) return;
+		    if (!Others.Helpers.IsImage(fileDialog.FileName)) return;
 
 			ImagePath = fileDialog.FileName;
 

@@ -109,6 +109,12 @@ namespace WindowsUI.ViewModels
 
 		    var fileDialog = new OpenFileDialog();
 
+		    fileDialog.Multiselect = false;
+
+		    fileDialog.CheckFileExists = true;
+
+		    fileDialog.Title = "Otevřít obrázek";
+
 		    fileDialog.ShowDialog(MainWindowViewModel.GetInstance.AppWindow);
 
 		    if (!Others.Helpers.IsImage(fileDialog.FileName)) return;
@@ -136,7 +142,7 @@ namespace WindowsUI.ViewModels
 			else
 				thread = new Thread(() =>
 				{
-					DecryptText = Decrypter.Decrypt(ImagePath).Remove(250);
+					DecryptText = Decrypter.Decrypt(ImagePath).Remove(2000);
 					GC.Collect();
 					GC.WaitForPendingFinalizers();
 				});

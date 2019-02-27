@@ -13,8 +13,7 @@
         Width="800"
         MinWidth="800"
         MinHeight="550"
-        WindowStartupLocation="CenterScreen"
-        Icon="Resources/Images/Icon.ico">
+        WindowStartupLocation="CenterScreen">
     <Grid Background="Orange">
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
@@ -32,7 +31,7 @@
                 Width="Auto"
                 FontSize="15"
                 IsEditable="False" 
-                SelectedIndex="0"
+                SelectedIndex="1"
                 SelectionChanged="Selector_OnSelectionChanged">
                 <ComboBoxItem>ASCII</ComboBoxItem>
                 <ComboBoxItem>UTF-8</ComboBoxItem>
