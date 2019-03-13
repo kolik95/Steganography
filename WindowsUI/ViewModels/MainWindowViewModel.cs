@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using WindowsUI.Others;
 using WindowsUI.RelayCommands;
 using Steganografie.Encryption;
 

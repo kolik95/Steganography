@@ -14,7 +14,7 @@
     <Border Padding="30">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="2*"/>
+                <RowDefinition Height="4*"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
@@ -31,14 +31,11 @@
                                 x:Name="ImageControl1">
                     <Image Source="{Binding ImagePath, Converter={valueConverters:PathToImageConverter}}"/>
                 </ContentControl>
-                <ContentControl Style="{StaticResource DropControl}"
-                                Grid.Column="1"
-                                Margin="10 0"
-                                Tag="Vložte původní obrázek (volitelné)"
-                                Drop="Grid_Drop"
-                                x:Name="ImageControl2">
-                    <Image Source="{Binding ReferenceImagePath, Converter={valueConverters:PathToImageConverter}}"/>
-                </ContentControl>
+                <TextBox Grid.Column="1"
+                         HorizontalScrollBarVisibility="Disabled"
+                         Text="{Binding DecryptText, Mode=TwoWay}"
+                         Style="{StaticResource IOBox}"
+                         Tag="Výstup"/>
             </Grid>
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -56,26 +53,9 @@
                              Style="{StaticResource PathTextBox}"
                              Tag="Cesta k zašifrovanému obrázku"/>
                 </DockPanel>
-                <DockPanel Grid.Column="1"
-                           Margin="10 0">
-                    <Button Style="{StaticResource OpenFileButton}"
-                            Command="{Binding GetImageCommand}"
-                            x:Name="ReferenceImageButton"
-                            CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Name}"/>
-                    <TextBox Margin="20 0 0 0"
-                             Text="{Binding ReferenceImagePath, Mode=TwoWay}"
-                             Style="{StaticResource PathTextBox}"
-                             Tag="Cesta k původnímu obrázku (volitelné)"/>
-                </DockPanel>
             </Grid>
-            <TextBox Grid.Row="2"
-                     Margin="10"
-                     HorizontalScrollBarVisibility="Disabled"
-                     Text="{Binding DecryptText, Mode=TwoWay}"
-                     Style="{StaticResource IOBox}"
-                     Tag="Výstup"/>
             <Button Grid.Row="3"
-                    Content="{Binding ButtonText}"
+                    Content="{Binding ButtonText, FallbackValue=Rozšifruj}"
                     Margin="10 0"
                     Command="{Binding DecryptCommand}"
                     IsEnabled="{Binding ButtonEnabled}"

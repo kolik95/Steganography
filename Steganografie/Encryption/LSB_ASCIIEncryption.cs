@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
-using System.Threading.Tasks;
 
 namespace Steganografie.Encryption
 {
@@ -9,36 +9,30 @@ namespace Steganografie.Encryption
 
 		public override EncTypes Type => EncTypes.LSB_ASCII;
 
-		public override Bitmap Encrypt(string path, string text)
+		public override Bitmap Encrypt(ref string path, ref string text)
 		{
 
 			Bitmap Image = Helpers.PathToBitmap(ref path);
 
 			if (text == "" || text == string.Empty || text == null) return Image;
 
-			List<int> bits = StringToBitsAscii(text);
+			List<int> bits = StringToBitsAscii($"{text}/!?*");
 
 			return ReplaceLastBits(bits, Image);
 
 		}
 
-		public override string Decrypt(string path, string refpath = "")
+		public override string Decrypt(ref string path)
 		{
 
 			Bitmap Image = Helpers.PathToBitmap(ref path);
 
-			var bytes = BitsToBytes(GetBitsInImage(Image.Width, Image.Height, 8,Image));
+			var bytes = BitsToBytes(GetBitsInImage(8,Image));
 
-			if (refpath != "")
-			{
+			bytes = RemoveExcess(ref bytes);
 
-				Bitmap refimg = Helpers.PathToBitmap(ref refpath);
-
-				var refbytes = BitsToBytes(GetBitsInImage(refimg.Width, refimg.Height, 8, refimg));
-
-				bytes = RemoveExcess(bytes, refbytes);
-
-			}
+			GC.Collect();
+			GC.WaitForPendingFinalizers();
 
 			return BytesToTextASCII(bytes);
 

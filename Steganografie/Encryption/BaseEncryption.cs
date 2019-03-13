@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Text;
 
@@ -18,12 +19,12 @@ namespace Steganografie.Encryption
 		/// Encrypts the message
 		/// <param name="path"></param>
 		/// </summary>
-		public abstract Bitmap Encrypt(string path, string text);
+		public abstract Bitmap Encrypt(ref string path, ref string text);
 
 		/// <summary>
 		/// Decrypts the message
 		/// </summary>
-		public abstract string Decrypt(string path, string refpath = "");
+		public abstract string Decrypt(ref string path);
 		
 		/// <summary>
 		/// Returns a list of
@@ -31,15 +32,15 @@ namespace Steganografie.Encryption
 		/// </summary>
 		/// <param name="image"></param>
 		/// <returns></returns>
-		protected List<int> GetBitsInImage(int width, int height, int filler, Bitmap Image)
+		protected List<int> GetBitsInImage(int filler, Bitmap Image)
 		{
 
 			var lastbits = new List<int>();
 
-			for (int y = 0; y < height; y++)
+			for (int y = 0; y < Image.Height; y++)
 			{
 
-				for (int x = 0; x < width; x++)
+				for (int x = 0; x < Image.Width; x++)
 				{
 
 					lastbits.Add(Image.GetPixel(x,y).R % 2);
@@ -261,17 +262,20 @@ namespace Steganografie.Encryption
 		/// Removes excess characters in a string
 		/// </summary>
 		/// <param name="text"></param>
-		/// <param name="text2"></param>
 		/// <returns></returns>
-		protected byte[] RemoveExcess(byte[] text, byte[] text2)
+		protected byte[] RemoveExcess(ref byte[] text)
 		{
 
 			var newtext = new List<byte>();
 
-			foreach (var letter in SubtractArrays(text, text2))
+			for (int i = 0; i < text.Length; i++)
 			{
 
-				newtext.Add(letter);
+				if (text[i] == 47 &&
+					text[i + 1] == 33 &&
+				    text[i + 2] == 63 &&
+				    text[i + 3] == 42) break;
+				newtext.Add(text[i]);
 
 			}
 
@@ -297,27 +301,6 @@ namespace Steganografie.Encryption
 
 			return input;
 
-		}
-
-		/// <summary>
-		/// Removes the common part of two strings
-		/// </summary>
-		/// <param name="string1"></param>
-		/// <param name="string2"></param>
-		/// <returns></returns>
-		private IEnumerable<byte> SubtractArrays(byte[] string1, byte[] string2)
-		{
-
-			for (int i = 0; i < string1.Length; i++)
-			{
-
-				if (string1[i] != string2[i])
-				{
-
-					yield return string1[i];
-
-				}
-			}
 		}
 	}
 }

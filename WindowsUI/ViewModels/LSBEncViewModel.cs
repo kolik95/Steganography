@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows;
+using WindowsUI.Others;
 using WindowsUI.RelayCommands;
 
 namespace WindowsUI.ViewModels
@@ -28,9 +29,7 @@ namespace WindowsUI.ViewModels
 
 		    set
 		    {
-
-			    Bitmap image = (Bitmap)Image.FromFile(value);
-			    if (image.Height <= 2160 || image.Width <= 3840)
+			    if (Helpers.CheckResolution(ref value))
 				    imagePath = value;
 
 		    }
@@ -49,7 +48,7 @@ namespace WindowsUI.ViewModels
 		public LSBEncViewModel()
 	    {
 
-			GetImageCommand = new RelayCommand(GetImage);
+			GetImageCommand = new RelayCommand(()=>ImagePath = Helpers.GetImage());
 		    SaveCommand = new RelayParameterizedCommand(parameter=>Save((string)parameter));
 
 			Background = Brushes.Transparent;
@@ -60,17 +59,6 @@ namespace WindowsUI.ViewModels
 
 		#region Public Methods
 
-		public void Drop(ref object sender, ref DragEventArgs e)
-		{
-
-			var paths = (string[])e.Data.GetData(DataFormats.FileDrop);
-
-			if(paths.Length > 0)
-				if (Others.Helpers.IsImage(paths[0]))
-					ImagePath = paths[0];
-
-		}  
-
 	    #endregion
 
 		#region Helper Methods
@@ -78,23 +66,9 @@ namespace WindowsUI.ViewModels
 		private Bitmap Encrypt(string Text)
 	    {
 
-		    if (!Others.Helpers.IsImage(ImagePath)) return null;
+		    if (!Others.Helpers.IsImage(imagePath)) return null;
 
-		    return Encrypter.Encrypt(ImagePath, Text);
-
-	    }
-
-	    private void GetImage()
-	    {
-
-		    var fileDialog = new OpenFileDialog();
-
-		    fileDialog.ShowDialog(MainWindowViewModel.GetInstance.AppWindow);
-
-		    if (!Others.Helpers.IsImage(fileDialog.FileName)) return;
-
-			ImagePath = fileDialog.FileName;
-
+		    return Encrypter.Encrypt(ref imagePath, ref Text);
 
 	    }
 
@@ -110,6 +84,8 @@ namespace WindowsUI.ViewModels
 				Filter = "Bitmap Image | *.bmp",
 				FileName = "Obrázek"
 			};
+
+		    fileDialog.OverwritePrompt = true;
 
 			fileDialog.ShowDialog(MainWindowViewModel.GetInstance.AppWindow);
 

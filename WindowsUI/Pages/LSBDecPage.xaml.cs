@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using WindowsUI.Others;
 using WindowsUI.ViewModels;
 
 namespace WindowsUI.Pages
@@ -16,7 +17,7 @@ namespace WindowsUI.Pages
 	    private void Grid_Drop(object sender, DragEventArgs e)
 	    {
 
-			((LSBDecViewModel)this.DataContext).Drop(ref sender, ref e);
+			((LSBDecViewModel)this.DataContext).ImagePath = Helpers.Drop(ref sender, ref e);
 
 		    e.Handled = true;
 

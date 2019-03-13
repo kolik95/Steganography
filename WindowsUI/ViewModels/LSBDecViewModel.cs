@@ -1,10 +1,7 @@
-﻿using System;
-using Microsoft.Win32;
-using Steganografie.Encryption;
-using System.Drawing;
+﻿using Steganografie.Encryption;
+using System;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
 using WindowsUI.Others;
 using WindowsUI.RelayCommands;
 
@@ -15,7 +12,7 @@ namespace WindowsUI.ViewModels
 
 		#region Public Members
 
-		public BaseEncryption Decrypter => MainWindowViewModel.GetInstance.Encrypter;
+		public BaseEncryption Decrypter => MainWindowViewModel.GetInstance.Encrypter;		
 
 		public string ImagePath
 		{
@@ -25,25 +22,8 @@ namespace WindowsUI.ViewModels
 			set
 			{
 
-				Bitmap image = (Bitmap)System.Drawing.Image.FromFile(value);
-				if (image.Height <= 2160 || image.Width <= 3840)
+				if (Helpers.CheckResolution(ref value))
 					imagePath = value;
-
-			}
-
-		}
-
-		public string ReferenceImagePath
-		{
-
-			get { return imageReferencePath; }
-
-			set
-			{
-
-				Bitmap image = (Bitmap)System.Drawing.Image.FromFile(value);
-				if (image.Height <= 2160 || image.Width <= 3840)
-					imageReferencePath = value;
 
 			}
 
@@ -55,7 +35,7 @@ namespace WindowsUI.ViewModels
 
 		public bool ButtonEnabled { get; set; }
 
-		public RelayParameterizedCommand GetImageCommand { get; }
+		public RelayCommand GetImageCommand { get; }
 
 		public RelayCommand DecryptCommand { get; }
 
@@ -65,8 +45,6 @@ namespace WindowsUI.ViewModels
 
 		private string imagePath;
 
-		private string imageReferencePath;
-
 		#endregion
 
 		#region Constructor
@@ -74,7 +52,7 @@ namespace WindowsUI.ViewModels
 		public LSBDecViewModel()
 		{
 
-			GetImageCommand = new RelayParameterizedCommand(parameter => GetImage((string)parameter));
+			GetImageCommand = new RelayCommand(()=> ImagePath = Helpers.GetImage());
 			DecryptCommand = new RelayCommand(Decrypt);
 			ButtonText = "Rozšifruj";
 			ButtonEnabled = true;
@@ -85,76 +63,25 @@ namespace WindowsUI.ViewModels
 
 		#region Public Methods
 
-		public void Drop(ref object sender, ref DragEventArgs e)
-		{
-
-			var paths = (string[])e.Data.GetData(DataFormats.FileDrop);
-
-			if (paths.Length == 0) return;
-			if (!Others.Helpers.IsImage(paths[0])) return;
-
-			if (((ContentControl)sender).Name == "ImageControl1")
-				ImagePath = paths[0];
-			else
-				ReferenceImagePath = paths[0];
-
-		}
-
 		#endregion
 
 		#region Private Methods
-
-		private void GetImage(string buttonName)
-	    {
-
-		    var fileDialog = new OpenFileDialog();
-
-		    fileDialog.Multiselect = false;
-
-		    fileDialog.CheckFileExists = true;
-
-		    fileDialog.Title = "Otevřít obrázek";
-
-		    fileDialog.ShowDialog(MainWindowViewModel.GetInstance.AppWindow);
-
-		    if (!Others.Helpers.IsImage(fileDialog.FileName)) return;
-
-		    if (buttonName == "ImageButton")
-			    ImagePath = fileDialog.FileName;
-		    else
-			    ReferenceImagePath = fileDialog.FileName;
-	    }
 
 		private void Decrypt()
 		{
 
 			if (!Helpers.IsImage(ImagePath)) return;
 
-			Thread thread;
+			var backendThread = new Thread(() => DecryptText = Decrypter.Decrypt(ref imagePath));
 
-			if (Helpers.IsImage(ReferenceImagePath))
-				thread = new Thread(() =>
-				{
-					DecryptText = Decrypter.Decrypt(ImagePath, ReferenceImagePath);
-					GC.Collect();
-					GC.WaitForPendingFinalizers();
-				});
-			else
-				thread = new Thread(() =>
-				{
-					DecryptText = Decrypter.Decrypt(ImagePath).Remove(2000);
-					GC.Collect();
-					GC.WaitForPendingFinalizers();
-				});
-
-			thread.Start();
+			backendThread.Start();
 
 			new Thread(() =>
 			{
 
 				ButtonEnabled = false;
 
-				while (thread.ThreadState == ThreadState.Running)
+				while (backendThread.ThreadState == ThreadState.Running)
 				{
 
 					ButtonText = "Pracuji.";
