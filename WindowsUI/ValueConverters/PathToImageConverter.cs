@@ -16,7 +16,7 @@ namespace WindowsUI.ValueConverters
 		public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 
-			if (!Helpers.IsImage((string) value) || value == null) return null;
+			if (value == null) return null;
 
 			return new BitmapImage(new Uri(value as string, UriKind.Absolute));
 

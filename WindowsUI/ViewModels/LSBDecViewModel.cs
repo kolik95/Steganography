@@ -22,7 +22,7 @@ namespace WindowsUI.ViewModels
 			set
 			{
 
-				if (Helpers.CheckResolution(ref value))
+				if (Helpers.IsImage(value) && Helpers.CheckResolution(ref value))
 					imagePath = value;
 
 			}

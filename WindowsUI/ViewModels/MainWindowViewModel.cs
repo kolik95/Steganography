@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿
+using System.Windows;
 using System.Windows.Controls;
 using WindowsUI.Others;
+using WindowsUI.Pages;
 using WindowsUI.RelayCommands;
 using Steganografie.Encryption;
 
@@ -46,7 +48,11 @@ namespace WindowsUI.ViewModels
 
 		}
 
-		private LSB_ASCIIEncryption ASCIIEncrypter { get; }
+        public LSBDecPage DecPage { get; }
+
+        public LSBEncPage EncPage { get; }
+
+        private LSB_ASCIIEncryption ASCIIEncrypter { get; }
 
 		private LSB_UTF8Encryption UTF8Encrypter { get; }
 
@@ -67,6 +73,8 @@ namespace WindowsUI.ViewModels
 
 			ASCIIEncrypter = new LSB_ASCIIEncryption();
 			UTF8Encrypter = new LSB_UTF8Encryption();
+            DecPage = new LSBDecPage();
+            EncPage = new LSBEncPage();
 
 	    }
 

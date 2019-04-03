@@ -31,8 +31,7 @@ namespace Steganografie.Encryption
 
 			bytes = RemoveExcess(ref bytes);
 
-			GC.Collect();
-			GC.WaitForPendingFinalizers();
+			Image.Dispose();
 
 			return BytesToTextASCII(bytes);
 

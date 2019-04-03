@@ -68,7 +68,7 @@ namespace WindowsUI.Others
 		    var paths = (string[])e.Data.GetData(DataFormats.FileDrop);
 
 		    if (paths.Length == 0) return "";
-		    if (!Helpers.IsImage(paths[0])) return "";
+		    if (!IsImage(paths[0])) return "";
 		    return paths[0];
 
 	    }

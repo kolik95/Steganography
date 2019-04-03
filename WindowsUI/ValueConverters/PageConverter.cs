@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WindowsUI.Pages;
+using WindowsUI.ViewModels;
 
 namespace WindowsUI.ValueConverters
 {
@@ -18,12 +19,12 @@ namespace WindowsUI.ValueConverters
 		    {
 
 				case Pages.Pages.LSBEncPage:
-					return new LSBEncPage();
+					return MainWindowViewModel.GetInstance.EncPage;
 
 				case Pages.Pages.LSBDecPage:
-					return new LSBDecPage();
+					return MainWindowViewModel.GetInstance.DecPage;
 
-				default:
+                default:
 					return null;
 
 		    }
