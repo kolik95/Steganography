@@ -24,18 +24,14 @@ namespace Steganografie.Encryption
 
 		public override string Decrypt(ref string path)
 		{
+            using (Bitmap Image = Helpers.PathToBitmap(ref path))
+            {
+                var bytes = BitsToBytes(GetBitsInImage(16, Image));
 
-			Bitmap Image = Helpers.PathToBitmap(ref path);
+                bytes = RemoveExcess(ref bytes);
 
-			var bytes = BitsToBytes(GetBitsInImage(16, Image));
-
-			bytes = RemoveExcess(ref bytes);
-
-            Image.Dispose();
-
-            return BytesToTextUTF8(bytes);
-
+                return BytesToTextUTF8(bytes);
+            }	
 		}
-
 	}
 }

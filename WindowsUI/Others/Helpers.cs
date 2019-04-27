@@ -13,25 +13,25 @@ namespace WindowsUI.Others
 
 	    public static void Initialize()
 	    {
-			fileDialog = new OpenFileDialog();
-
-		    fileDialog.Multiselect = false;
-
-		    fileDialog.CheckFileExists = true;
-
-			fileDialog.Title = "Otevřít obrázek";
-
-		}
+            fileDialog = new OpenFileDialog
+            {
+                Multiselect = false,
+                CheckFileExists = true,
+                Title = "Otevřít obrázek"
+            };
+        }
 
 	    public static bool IsImage(string path)
-	    {
+        {
 
-		    try
-		    {
+            Image img = null;
 
-			    Image.FromFile(path);
+            try
+            {
 
-		    }
+                img = Image.FromFile(path);
+
+            }
 		    catch (Exception e)
 		    {
 
@@ -39,18 +39,25 @@ namespace WindowsUI.Others
 
 		    }
 
+            finally
+            {
+
+                img?.Dispose();
+
+            }
+
 		    return true;
 
 	    }
 
 	    public static bool CheckResolution(ref string path)
 	    {
-
-		    Bitmap image = (Bitmap)Image.FromFile(path);
-		    if (image.Height * image.Width <= 2160 * 3840) return true;
-		    return false;
-
-	    }
+            using (var image = (Bitmap) Image.FromFile(path))
+            {
+                if (image.Height * image.Width <= 2160 * 3840) return true;
+                return false;
+            }
+        }
 
 	    public static string GetImage()
 	    {  
@@ -66,10 +73,10 @@ namespace WindowsUI.Others
 	    {
 
 		    var paths = (string[])e.Data.GetData(DataFormats.FileDrop);
-
-		    if (paths.Length == 0) return "";
-		    if (!IsImage(paths[0])) return "";
-		    return paths[0];
+            
+		    if (paths?.Length == 0) return "";
+		    if (!IsImage(paths?[0])) return "";
+		    return paths?[0];
 
 	    }
 	}
