@@ -49,7 +49,7 @@ namespace WindowsUI.ViewModels
 	    {
 
 			GetImageCommand = new RelayCommand(()=>ImagePath = Helpers.GetImage());
-		    SaveCommand = new RelayParameterizedCommand(parameter=>Save((string)parameter));
+		    SaveCommand = new RelayParameterizedCommand(parameter=>Save((EncryptionParameters)parameter));
 
 			Background = Brushes.Transparent;
 
@@ -63,19 +63,19 @@ namespace WindowsUI.ViewModels
 
 		#region Helper Methods
 
-		private Bitmap Encrypt(string Text)
+		private Bitmap Encrypt(string Text, string password)
 	    {
 
 		    if (!Others.Helpers.IsImage(imagePath)) return null;
 
-		    return Encrypter.Encrypt(ref imagePath, ref Text);
+		    return Encrypter.Encrypt(ref imagePath, ref Text, ref password);
 
 	    }
 
-	    private void Save(string Text)
+	    private void Save(EncryptionParameters Parameters)
 	    {
 
-		    Bitmap image = Encrypt(Text);
+		    Bitmap image = Encrypt(Parameters.Text, Parameters.Password);
 
 			if (image == null) return;
 

@@ -3,6 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
+using System.Net.Http.Headers;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Steganografie.Encryption
@@ -19,12 +23,12 @@ namespace Steganografie.Encryption
 		/// Encrypts the message
 		/// <param name="path"></param>
 		/// </summary>
-		public abstract Bitmap Encrypt(ref string path, ref string text);
+		public abstract Bitmap Encrypt(ref string path, ref string text, ref string password);
 
 		/// <summary>
 		/// Decrypts the message
 		/// </summary>
-		public abstract string Decrypt(ref string path);
+		public abstract string Decrypt(ref string path, ref string password);
 		
 		/// <summary>
 		/// Returns a list of
@@ -228,7 +232,84 @@ namespace Steganografie.Encryption
 
 		}
 
-		private Color ReplaceR(int value, Color pixel)
+        /// <summary>
+        /// Encrypts the input text with a given password and converts it to Base64
+        /// </summary>
+        /// <returns></returns>
+        protected string EncryptText(ref string text, ref string password)
+        {
+
+            password = AppendPassword(ref password);
+
+            var newText = new StringBuilder();
+
+            var ms = new MemoryStream();
+            var rmCrypto = new RijndaelManaged {KeySize = 128, Key = Encoding.UTF8.GetBytes(password)};
+            rmCrypto.GenerateIV();
+            using (var cryptStream = new CryptoStream(ms,rmCrypto.CreateEncryptor(rmCrypto.Key, rmCrypto.IV), CryptoStreamMode.Write))
+            using (var sw = new StreamWriter(cryptStream))
+            {        
+                sw.Write($"{text}IV={BytesToTextUTF8(rmCrypto.IV)}");
+            }
+
+            newText.Append(Convert.ToBase64String(ms.ToArray()));
+            newText.Append(Convert.ToBase64String(new byte[]{73, 86, 61}));
+            newText.Append(Convert.ToBase64String(rmCrypto.IV));
+
+            return newText.ToString();
+
+        }
+
+
+        /// <summary>
+        /// Decrypts the input with a given password and converts it from Base64
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        protected string DecryptText(byte[] input, ref string password)
+        {
+
+            var text = BytesToTextUTF8(input);
+
+            password = AppendPassword(ref password);
+
+            text = BytesToTextUTF8(Convert.FromBase64String(text));
+
+            byte[] IV = Encoding.UTF8.GetBytes(text.Substring(text.LastIndexOf("IV=")));
+
+            var ms = new MemoryStream();
+            var rmCrypto = new RijndaelManaged {KeySize = 128, Key = Encoding.UTF8.GetBytes(password), IV = IV};
+            using (var cryptStream = new CryptoStream(ms, rmCrypto.CreateEncryptor(rmCrypto.Key, rmCrypto.IV), CryptoStreamMode.Read))
+            using (var sr = new StreamReader(cryptStream))
+            {
+
+                  return sr.ReadToEnd();
+
+            }
+
+        }
+
+        private string AppendPassword(ref string password)
+        {
+
+            var sb = new StringBuilder();
+
+            sb.Append(password);
+
+            for (int i = password.Length; i < 16; i++)
+            {
+
+                sb.Append('A');
+
+            }
+
+            return sb.ToString();
+
+        }
+
+
+        private Color ReplaceR(int value, Color pixel)
 		{
 
 			return Color.FromArgb(pixel.A,
@@ -301,6 +382,6 @@ namespace Steganografie.Encryption
 
 			return input;
 
-		}
+		}     
 	}
 }

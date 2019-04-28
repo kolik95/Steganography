@@ -37,7 +37,7 @@ namespace WindowsUI.ViewModels
 
 		public RelayCommand GetImageCommand { get; }
 
-		public RelayCommand DecryptCommand { get; }
+		public RelayParameterizedCommand DecryptCommand { get; }
 
 		#endregion
 
@@ -53,7 +53,7 @@ namespace WindowsUI.ViewModels
 		{
 
 			GetImageCommand = new RelayCommand(()=> ImagePath = Helpers.GetImage());
-			DecryptCommand = new RelayCommand(Decrypt);
+			DecryptCommand = new RelayParameterizedCommand(parameter=>Decrypt((string)parameter));;
 			ButtonText = "Rozšifruj";
 			ButtonEnabled = true;
 
@@ -67,12 +67,12 @@ namespace WindowsUI.ViewModels
 
 		#region Private Methods
 
-		private void Decrypt()
+		private void Decrypt(string password)
 		{
 
 			if (!Helpers.IsImage(ImagePath)) return;
 
-			var backendThread = new Thread(() => DecryptText = Decrypter.Decrypt(ref imagePath));
+			var backendThread = new Thread(() => DecryptText = Decrypter.Decrypt(ref imagePath, ref password));
 
 			backendThread.Start();
 
@@ -84,12 +84,7 @@ namespace WindowsUI.ViewModels
 				while (backendThread.ThreadState == ThreadState.Running)
 				{
 
-					ButtonText = "Pracuji.";
-					Thread.Sleep(1200);
-					ButtonText = "Pracuji..";
-					Thread.Sleep(1200);
 					ButtonText = "Pracuji...";
-					Thread.Sleep(1200);
 
 				}
 

@@ -16,12 +16,12 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="4*"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="20"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <ContentControl Style="{StaticResource DropControl}"
@@ -31,11 +31,28 @@
                                 x:Name="ImageControl1">
                     <Image Source="{Binding ImagePath, Converter={valueConverters:PathToImageConverter}}"/>
                 </ContentControl>
-                <TextBox Grid.Column="1"
-                         HorizontalScrollBarVisibility="Disabled"
-                         Text="{Binding DecryptText, Mode=TwoWay}"
-                         Style="{StaticResource IOBox}"
-                         Tag="Výstup"/>
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <DockPanel
+                        Height="Auto"
+                        Grid.Row="0">
+                        <TextBox Style="{StaticResource PathTextBox}"
+                                 Tag="Heslo (Může být prázdné)"
+                                 Height="30"
+                                 FontSize="19"
+                                 MaxLength="16"
+                                 x:Name="PassBox"/>
+                    </DockPanel>
+                    <TextBox Grid.Row="1"
+                             HorizontalScrollBarVisibility="Disabled"
+                             Text="{Binding DecryptText, Mode=TwoWay}"
+                             Style="{StaticResource IOBox}"
+                             Tag="Výstup"
+                             Margin="0 10 0 0"/>
+                </Grid>
             </Grid>
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -59,7 +76,8 @@
                     Margin="10 0"
                     Command="{Binding DecryptCommand}"
                     IsEnabled="{Binding ButtonEnabled}"
-                    Style="{StaticResource ButtonStyle}"/>
+                    Style="{StaticResource ButtonStyle}"
+                    CommandParameter="{Binding ElementName=PassBox, Path=Text}"/>
         </Grid>
     </Border>
 </Pages:BasePage>
