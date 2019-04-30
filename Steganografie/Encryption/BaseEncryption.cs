@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -244,17 +245,23 @@ namespace Steganografie.Encryption
             var newText = new StringBuilder();
 
             var ms = new MemoryStream();
-            var rmCrypto = new RijndaelManaged {KeySize = 128, Key = Encoding.UTF8.GetBytes(password)};
+            var rmCrypto = new RijndaelManaged {KeySize = 128, Key = Encoding.UTF8.GetBytes(password), BlockSize = 256};
             rmCrypto.GenerateIV();
             using (var cryptStream = new CryptoStream(ms,rmCrypto.CreateEncryptor(rmCrypto.Key, rmCrypto.IV), CryptoStreamMode.Write))
             using (var sw = new StreamWriter(cryptStream))
-            {        
-                sw.Write($"{text}IV={BytesToTextUTF8(rmCrypto.IV)}");
+            {
+                sw.Write(text);
             }
 
             newText.Append(Convert.ToBase64String(ms.ToArray()));
-            newText.Append(Convert.ToBase64String(new byte[]{73, 86, 61}));
-            newText.Append(Convert.ToBase64String(rmCrypto.IV));
+            newText.Append("IV=");
+
+            foreach (var number in rmCrypto.IV)
+            {
+
+                newText.Append($"Num={number}");
+
+            }
 
             return newText.ToString();
 
@@ -270,16 +277,16 @@ namespace Steganografie.Encryption
         protected string DecryptText(byte[] input, ref string password)
         {
 
-            var text = BytesToTextUTF8(input);
+            string text = Encoding.UTF8.GetString(input);
 
             password = AppendPassword(ref password);
 
-            text = BytesToTextUTF8(Convert.FromBase64String(text));
+            byte[] IV = GetIV(input, text.LastIndexOf("IV=") + 3).ToArray();
 
-            byte[] IV = Encoding.UTF8.GetBytes(text.Substring(text.LastIndexOf("IV=")));
+            text = text.Remove(text.LastIndexOf("IV="));
 
-            var ms = new MemoryStream();
-            var rmCrypto = new RijndaelManaged {KeySize = 128, Key = Encoding.UTF8.GetBytes(password), IV = IV};
+            var ms = new MemoryStream(Convert.FromBase64String(text));
+            var rmCrypto = new RijndaelManaged {KeySize = 128, Key = Encoding.UTF8.GetBytes(password),IV = IV, BlockSize = 256};
             using (var cryptStream = new CryptoStream(ms, rmCrypto.CreateEncryptor(rmCrypto.Key, rmCrypto.IV), CryptoStreamMode.Read))
             using (var sr = new StreamReader(cryptStream))
             {
@@ -289,6 +296,18 @@ namespace Steganografie.Encryption
             }
 
         }
+
+	    private IEnumerable<byte> GetIV(byte[] input, int firstIndex)
+	    {
+
+	        for (int i = firstIndex; i < input.Length; i++)
+	        {
+
+	            yield return input[i];
+
+	        }
+
+	    }
 
         private string AppendPassword(ref string password)
         {
