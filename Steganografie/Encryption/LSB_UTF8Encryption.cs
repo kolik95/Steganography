@@ -37,6 +37,13 @@ namespace Steganografie.Encryption
 
                 bytes = RemoveExcess(ref bytes);
 
+                if (password != "")
+                {
+
+                    return DecryptText(bytes, ref password);
+
+                }
+
                 return BytesToTextUTF8(bytes);
             }	
 		}

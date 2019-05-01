@@ -246,7 +246,6 @@ namespace Steganografie.Encryption
 
             var ms = new MemoryStream();
             var rmCrypto = new RijndaelManaged {KeySize = 128, Key = Encoding.UTF8.GetBytes(password), BlockSize = 256};
-            rmCrypto.GenerateIV();
             using (var cryptStream = new CryptoStream(ms,rmCrypto.CreateEncryptor(rmCrypto.Key, rmCrypto.IV), CryptoStreamMode.Write))
             using (var sw = new StreamWriter(cryptStream))
             {
@@ -281,23 +280,34 @@ namespace Steganografie.Encryption
 
             password = AppendPassword(ref password);
 
-            byte[] IV = GetIV(Encoding.UTF8.GetString(input).Substring(text.LastIndexOf("IV=") + 3)).ToArray();
+            byte[] IV = GetIV(text.Substring(text.LastIndexOf("IV=") + 3)).ToArray();
 
             text = text.Remove(text.LastIndexOf("IV="));
 
-            var ms = new MemoryStream(Convert.FromBase64String(text));
-            var rmCrypto = new RijndaelManaged {KeySize = 128, Key = Encoding.UTF8.GetBytes(password), BlockSize = 256, IV = IV};
-            using (var cryptStream = new CryptoStream(ms, rmCrypto.CreateEncryptor(rmCrypto.Key, rmCrypto.IV), CryptoStreamMode.Read))
-            using (var sr = new StreamReader(cryptStream))
+            try
+            {
+                var ms = new MemoryStream(Convert.FromBase64String(text));
+                var rmCrypto = new RijndaelManaged {KeySize = 128, Key = Encoding.UTF8.GetBytes(password), BlockSize = 256, IV = IV};
+                using (var cryptStream = new CryptoStream(ms, rmCrypto.CreateDecryptor(rmCrypto.Key, rmCrypto.IV), CryptoStreamMode.Read))
+                using (var sr = new StreamReader(cryptStream))
+                {
+
+                    return sr.ReadToEnd();
+
+                }
+
+            }
+
+            catch (Exception e)
             {
 
-                  return sr.ReadToEnd();
+                return text;
 
             }
 
         }
 
-	    private IEnumerable<Byte> GetIV(string input)
+	    private IEnumerable<byte> GetIV(string input)
 	    {
 
             string[] nums = input.Split(new[]{"Num="}, StringSplitOptions.RemoveEmptyEntries);
@@ -305,7 +315,7 @@ namespace Steganografie.Encryption
 	        foreach (var num in nums)
 	        {
 
-	            yield return Byte.Parse(num);
+	            yield return byte.Parse(num);
 
 	        }
 
