@@ -240,12 +240,12 @@ namespace Steganografie.Encryption
         protected string EncryptText(ref string text, ref string password)
         {
 
-            password = AppendPassword(ref password);
+            byte[] bytePassword = HashPassword(ref password);
 
             var newText = new StringBuilder();
 
             var ms = new MemoryStream();
-            var rmCrypto = new RijndaelManaged {KeySize = 128, Key = Encoding.UTF8.GetBytes(password), BlockSize = 256};
+            var rmCrypto = new RijndaelManaged {KeySize = 128, Key = bytePassword, BlockSize = 256};
             using (var cryptStream = new CryptoStream(ms,rmCrypto.CreateEncryptor(rmCrypto.Key, rmCrypto.IV), CryptoStreamMode.Write))
             using (var sw = new StreamWriter(cryptStream))
             {
@@ -258,7 +258,7 @@ namespace Steganografie.Encryption
             foreach (var number in rmCrypto.IV)
             {
 
-                newText.Append($"Num={number}");
+                newText.Append($"{number};");
 
             }
 
@@ -278,7 +278,7 @@ namespace Steganografie.Encryption
 
             string text = Encoding.UTF8.GetString(input);
 
-            password = AppendPassword(ref password);
+            byte[] bytePassword = HashPassword(ref password);
 
             byte[] IV = GetIV(text.Substring(text.LastIndexOf("IV=") + 3)).ToArray();
 
@@ -287,7 +287,7 @@ namespace Steganografie.Encryption
             try
             {
                 var ms = new MemoryStream(Convert.FromBase64String(text));
-                var rmCrypto = new RijndaelManaged {KeySize = 128, Key = Encoding.UTF8.GetBytes(password), BlockSize = 256, IV = IV};
+                var rmCrypto = new RijndaelManaged {KeySize = 128, Key = bytePassword, BlockSize = 256, IV = IV};
                 using (var cryptStream = new CryptoStream(ms, rmCrypto.CreateDecryptor(rmCrypto.Key, rmCrypto.IV), CryptoStreamMode.Read))
                 using (var sr = new StreamReader(cryptStream))
                 {
@@ -310,7 +310,7 @@ namespace Steganografie.Encryption
 	    private IEnumerable<byte> GetIV(string input)
 	    {
 
-            string[] nums = input.Split(new[]{"Num="}, StringSplitOptions.RemoveEmptyEntries);
+	        string[] nums = input.Split(new char []{';'}, StringSplitOptions.RemoveEmptyEntries);
 
 	        foreach (var num in nums)
 	        {
@@ -321,22 +321,14 @@ namespace Steganografie.Encryption
 
 	    }
 
-        private string AppendPassword(ref string password)
+        private byte[] HashPassword(ref string password)
         {
 
-            var sb = new StringBuilder();
+            byte[] salt = {62, 243, 87, 95, 143, 182, 175, 213, 35, 83, 64, 12, 170, 227, 167, 87};
 
-            sb.Append(password);
+            var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 10000);
 
-            for (int i = password.Length; i < 16; i++)
-            {
-
-                sb.Append('A');
-
-            }
-
-            return sb.ToString();
-
+            return pbkdf2.GetBytes(16);
         }
 
 
