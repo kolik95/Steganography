@@ -1,1 +1,1 @@
-A text hiding program written in .NET Core & .NET Framework
+A program to hide text within an image written in C# targeting .NET Framework
